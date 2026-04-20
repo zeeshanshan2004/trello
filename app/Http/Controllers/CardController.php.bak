@@ -1,0 +1,324 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Board;
+use App\Models\ListModel;
+use App\Models\Card;
+use App\Models\User;
+use App\Models\Workspace;
+use App\Models\Comment;
+use App\Models\Attachment;
+use App\Models\ChecklistItem;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+
+class CardController extends Controller
+{
+    /**
+     * Store a newly created card in storage.
+     */
+    public function store(Request $request, Board $board, ListModel $list)
+    {
+        $user = Auth::user();
+        
+        // Admin or Workspace Owner or Workspace Member check
+        $isOwner = $board->workspace->isOwner($user->id);
+        $isMember = $board->workspace->hasUser($user->id);
+
+        if (!$user->isSystemAdmin() && !$isOwner && !$isMember) {
+            return response()->json(['success' => false, 'error' => 'Unauthorized'], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+        }
+
+        // Get the highest position in this list
+        $maxPosition = $list->cards()->max('position') ?? -1;
+
+        $card = Card::create([
+            'list_id' => $list->id,
+            'title' => $request->title,
+            'position' => $maxPosition + 1,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'card' => $card
+        ]);
+    }
+
+    /**
+     * Display the specific card.
+     */
+    public function show(Board $board, ListModel $list, Card $card)
+    {
+        // Load relationships
+        $card->load(['checklistItems', 'members', 'attachments.user', 'comments.user']);
+        $board->load(['labels', 'lists']);
+
+        // Get workspace members with pivot data (excluding admin and owner)
+        $workspaceOwnerId = $board->workspace->users()->wherePivot('role', 'owner')->first()?->id;
+        $workspaceMembers = $board->workspace->users()
+            ->withPivot('role', 'can_comment')
+            ->where('users.role', '!=', 'admin')
+            ->where('users.id', '!=', $workspaceOwnerId)
+            ->get();
+
+        // Board shared users excluding admin and workspace owner
+        $boardMembers = $board->sharedUsers()
+            ->where('users.is_active', true)
+            ->where('users.role', '!=', 'admin')
+            ->where('users.id', '!=', $workspaceOwnerId)
+            ->get();
+        
+        // Workspace Members / System Users (Admin list logic)
+        // Fetches all active users in the workspace NOT already on the board
+        $workspaceMembersNotOnBoard = $board->workspace->users()
+            ->where('users.is_active', true)
+            ->where('users.role', '!=', 'admin')
+            ->where('users.id', '!=', $workspaceOwnerId)
+            ->whereNotIn('users.id', $boardMembers->pluck('id'))
+            ->get();
+
+        // Standard active users list (all users in workspace)
+        $allActiveUsers = $board->workspace->users()
+            ->where('users.is_active', true)
+            ->where('users.role', '!=', 'admin')
+            ->where('users.id', '!=', $workspaceOwnerId)
+            ->get();
+
+        return view('cards.show', [
+            'board' => $board,
+            'list' => $list,
+            'card' => $card,
+            'workspaceMembers' => $workspaceMembers, 
+            'boardMembers' => $boardMembers, 
+            'workspaceMembersNotOnBoard' => $workspaceMembersNotOnBoard,
+            'allActiveUsers' => $allActiveUsers,
+            'boardLabels' => $board->labels,
+        ]);
+    }
+
+    /**
+     * Update card details.
+     */
+    public function update(Request $request, Board $board, ListModel $list, Card $card)
+    {
+        $card->update($request->only(['title', 'description', 'due_date', 'labels']));
+        return response()->json(['success' => true, 'card' => $card]);
+    }
+
+    /**
+     * Move card between lists or positions.
+     */
+    public function move(Request $request, Board $board, ListModel $list, Card $card)
+    {
+        $card->update([
+            'list_id' => $request->list_id,
+            'position' => $request->position ?? 0
+        ]);
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Archive the card.
+     */
+    public function archive(Request $request, Board $board, ListModel $list, Card $card)
+    {
+        $card->update(['is_archived' => true]);
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Delete the card.
+     */
+    public function destroy(Board $board, ListModel $list, Card $card)
+    {
+        $card->delete();
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Add member to card.
+     */
+    public function addMember(Request $request, Board $board, ListModel $list, Card $card)
+    {
+        $userId = $request->user_id;
+        $workspace = $board->workspace;
+        
+        // Auto-share with board if not already
+        if (!$board->sharedUsers()->where('user_id', $userId)->exists()) {
+            $board->sharedUsers()->attach($userId);
+        }
+
+        // Add to card members
+        $card->members()->syncWithoutDetaching([$userId]);
+        
+        // Grant comment permission in workspace if not already set
+        if ($workspace->hasUser($userId)) {
+            $workspace->users()->updateExistingPivot($userId, ['can_comment' => true]);
+        } else {
+            $workspace->users()->attach($userId, ['role' => 'member', 'can_comment' => true]);
+        }
+        
+        $user = User::find($userId);
+        
+        return response()->json(['success' => true, 'user' => $user]);
+    }
+
+    /**
+     * Remove member from card.
+     */
+    public function removeMember(Board $board, ListModel $list, Card $card, User $user)
+    {
+        $card->members()->detach($user->id);
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Store a comment on the card.
+     */
+    public function storeComment(Request $request, Board $board, ListModel $list, Card $card)
+    {
+        $comment = $card->comments()->create([
+            'content' => $request->content,
+            'user_id' => Auth::id()
+        ]);
+        return response()->json(['success' => true, 'comment' => $comment->load('user')]);
+    }
+
+    /**
+     * Delete a comment.
+     */
+    public function destroyComment(Board $board, ListModel $list, Card $card, $commentId)
+    {
+        $comment = $card->comments()->findOrFail($commentId);
+        if ($comment->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $comment->delete();
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Poll for new comments.
+     */
+    public function pollComments(Board $board, ListModel $list, Card $card)
+    {
+        return response()->json([
+            'comments' => $card->comments()->with('user')->orderBy('created_at', 'desc')->get()
+        ]);
+    }
+
+    /**
+     * Store a checklist item.
+     */
+    public function storeChecklistItem(Request $request, Board $board, ListModel $list, Card $card)
+    {
+        $item = $card->checklistItems()->create([
+            'content' => $request->content,
+            'is_completed' => false
+        ]);
+        return response()->json(['success' => true, 'item' => $item]);
+    }
+
+    /**
+     * Update a checklist item.
+     */
+    public function updateChecklistItem(Request $request, Board $board, ListModel $list, Card $card, $itemId)
+    {
+        $item = $card->checklistItems()->findOrFail($itemId);
+        $item->update($request->only(['content', 'is_completed']));
+        return response()->json(['success' => true, 'item' => $item]);
+    }
+
+    /**
+     * Delete a checklist item.
+     */
+    public function destroyChecklistItem(Board $board, ListModel $list, Card $card, $itemId)
+    {
+        $card->checklistItems()->findOrFail($itemId)->delete();
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Store attachment.
+     */
+    public function storeAttachment(Request $request, Board $board, ListModel $list, Card $card)
+    {
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $path = $file->store('attachments', 'public');
+            
+            $attachment = $card->attachments()->create([
+                'name' => $file->getClientOriginalName(),
+                'file_path' => $path,
+                'user_id' => Auth::id()
+            ]);
+            
+            return response()->json(['success' => true, 'attachment' => $attachment->load('user')]);
+        }
+        return response()->json(['success' => false], 400);
+    }
+
+    /**
+     * Destroy attachment.
+     */
+    public function destroyAttachment(Board $board, ListModel $list, Card $card, $attachmentId)
+    {
+        $attachment = $card->attachments()->findOrFail($attachmentId);
+        Storage::disk('public')->delete($attachment->file_path);
+        $attachment->delete();
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Update member permission in workspace.
+     */
+    public function updateMemberPermission(Request $request, Board $board)
+    {
+        $workspace = $board->workspace;
+        $userId = $request->user_id;
+        $canComment = (bool)$request->can_comment;
+
+        if ($workspace->hasUser($userId)) {
+            $workspace->users()->updateExistingPivot($userId, ['can_comment' => $canComment]);
+        } else {
+            $workspace->users()->attach($userId, ['role' => 'member', 'can_comment' => $canComment]);
+        }
+
+        // Auto-add to board if granting permission
+        if ($canComment && !$board->sharedUsers()->where('user_id', $userId)->exists()) {
+            $board->sharedUsers()->attach($userId);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Toggle all member permissions.
+     */
+    public function toggleAllPermissions(Request $request, Board $board)
+    {
+        $canComment = (bool)$request->can_comment;
+        $workspace = $board->workspace;
+        
+        $users = $workspace->users()->wherePivot('role', '!=', 'owner')->get();
+        foreach ($users as $user) {
+            $workspace->users()->updateExistingPivot($user->id, ['can_comment' => $canComment]);
+            if ($canComment && !$board->sharedUsers()->where('user_id', $user->id)->exists()) {
+                $board->sharedUsers()->attach($user->id);
+            }
+        }
+        
+        return response()->json(['success' => true]);
+    }
+}
