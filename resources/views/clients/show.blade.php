@@ -16,13 +16,13 @@
         }
         .header {
             background: #22272b;
-            padding: 16px 32px;
+            padding: 12px 24px;
             border-bottom: 1px solid #38414a;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-        .header-left { display: flex; align-items: center; gap: 16px; }
+        .header-left { display: flex; align-items: center; gap: 20px; }
         .client-info { display: flex; align-items: center; gap: 16px; }
         .client-image {
             width: 60px;
@@ -43,11 +43,11 @@
             font-weight: bold;
             color: white;
         }
-        .client-name { font-size: 24px; font-weight: 600; color: white; }
-        .client-details { font-size: 14px; color: #9fadbc; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 32px; }
-        .section { margin-bottom: 32px; }
-        .section-title { font-size: 16px; font-weight: 600; color: #b6c2cf; margin-bottom: 16px; }
+        .client-name { font-size: 22px; font-weight: 600; color: white; }
+        .client-details { font-size: 13px; color: #9fadbc; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+        .section { margin-bottom: 24px; }
+        .section-title { font-size: 15px; font-weight: 600; color: #b6c2cf; margin-bottom: 12px; }
         .boards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -73,19 +73,37 @@
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 16px;
-            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 14px;
+            background: rgba(0, 0, 0, 0.7);
             color: white;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
         }
-        .btn-secondary { background: #22272b; color: #b6c2cf; border: 1px solid #38414a; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-secondary { 
+            background: #2c333a; 
+            color: #b6c2cf; 
+            border: 1px solid #454f59; 
+            padding: 6px 12px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            text-decoration: none; 
+            display: inline-flex;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn-secondary:hover {
+            background: #3c444d;
+            color: white;
+            border-color: #579dff;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="header-left">
-            <a href="{{ url()->previous() }}" class="btn-secondary">← Back</a>
+            <a href="{{ route('dashboard') }}" class="btn-secondary">← Back</a>
             <div class="client-info">
                 <div style="position: relative; width: 70px; height: 70px;">
                     @if($client->image_path)

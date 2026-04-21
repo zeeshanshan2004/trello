@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,21 +8,29 @@
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #1d2125;
             color: #b6c2cf;
             min-height: 100vh;
             /* Hide scrollbars while preserving scroll functionality */
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE/Edge */
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE/Edge */
         }
-        
+
         /* Hide scrollbar for Webkit browsers (Chrome, Safari, Opera) */
         body::-webkit-scrollbar {
             display: none;
         }
+
         .header {
             background: #22272b;
             padding: 16px 32px;
@@ -30,8 +39,19 @@
             align-items: center;
             justify-content: space-between;
         }
-        .header-left { display: flex; align-items: center; gap: 16px; }
-        .workspace-info { display: flex; align-items: center; gap: 12px; }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .workspace-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         .workspace-icon {
             width: 40px;
             height: 40px;
@@ -44,14 +64,47 @@
             background: #0052cc;
             overflow: hidden;
         }
-        .workspace-icon.blue { background: #0052cc; }
-        .workspace-icon.green { background: #0c66e4; }
-        .workspace-icon.red { background: #c9372c; }
-        .workspace-icon.purple { background: #7c3aed; }
-        .workspace-icon.orange { background: #f97316; }
-        .workspace-icon.pink { background: #ec4899; }
-        .workspace-name { font-size: 18px; font-weight: 600; color: white; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .header-actions { display: flex; align-items: center; gap: 12px; }
+
+        .workspace-icon.blue {
+            background: #0052cc;
+        }
+
+        .workspace-icon.green {
+            background: #0c66e4;
+        }
+
+        .workspace-icon.red {
+            background: #c9372c;
+        }
+
+        .workspace-icon.purple {
+            background: #7c3aed;
+        }
+
+        .workspace-icon.orange {
+            background: #f97316;
+        }
+
+        .workspace-icon.pink {
+            background: #ec4899;
+        }
+
+        .workspace-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         .user-avatar-header {
             width: 32px;
             height: 32px;
@@ -67,6 +120,7 @@
             cursor: pointer;
             position: relative;
         }
+
         .user-dropdown {
             position: absolute;
             top: 40px;
@@ -75,15 +129,17 @@
             border: 1px solid #38414a;
             border-radius: 4px;
             width: 320px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
             display: none;
             z-index: 1001;
             padding: 8px 0;
             text-align: left;
         }
+
         .user-dropdown.active {
             display: block;
         }
+
         .dropdown-item {
             padding: 8px 16px;
             color: #b6c2cf;
@@ -92,15 +148,18 @@
             display: block;
             cursor: pointer;
         }
+
         .dropdown-item:hover {
             background: #323940;
             color: white;
         }
+
         .dropdown-divider {
             height: 1px;
             background: #38414a;
             margin: 8px 0;
         }
+
         .dropdown-user-info {
             padding: 8px 16px;
             font-size: 12px;
@@ -110,17 +169,51 @@
             word-break: break-all;
             overflow-wrap: break-word;
         }
-        .btn { padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer; font-weight: 500; text-decoration: none; display: inline-block; }
-        .btn-primary { background: #0052cc; color: white; }
-        .btn-secondary { background: #22272b; color: #b6c2cf; border: 1px solid #38414a; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 32px; }
-        .section { margin-bottom: 32px; }
-        .section-title { font-size: 16px; font-weight: 600; color: #b6c2cf; margin-bottom: 16px; }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #0052cc;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #22272b;
+            color: #b6c2cf;
+            border: 1px solid #38414a;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #b6c2cf;
+            margin-bottom: 16px;
+        }
+
         .boards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 16px;
         }
+
         .board-card {
             position: relative;
             border-radius: 8px;
@@ -129,16 +222,35 @@
             transition: transform 0.2s;
             height: 96px;
         }
-        .board-card:hover { transform: translateY(-2px); }
-        .board-card-image { width: 100%; height: 100%; object-fit: cover; }
+
+        .board-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .board-card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .board-card-gradient {
             width: 100%;
             height: 100%;
             background: linear-gradient(135deg, #0052cc 0%, #0065ff 100%);
         }
-        .board-card-gradient.blue { background: linear-gradient(135deg, #0052cc 0%, #0065ff 100%); }
-        .board-card-gradient.purple { background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); }
-        .board-card-gradient.orange { background: linear-gradient(135deg, #f97316 0%, #fb923c 100%); }
+
+        .board-card-gradient.blue {
+            background: linear-gradient(135deg, #0052cc 0%, #0065ff 100%);
+        }
+
+        .board-card-gradient.purple {
+            background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+        }
+
+        .board-card-gradient.orange {
+            background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+        }
+
         .board-card-title {
             position: absolute;
             bottom: 0;
@@ -150,36 +262,41 @@
             font-size: 14px;
             font-weight: 600;
         }
-       .board-card.create {
-    background: #22272b;
-    border: 2px dashed #38414a;
-    display: flex;
-    /* Add these two lines */
-    flex-direction: column; 
-    text-align: center;
-    
-    align-items: center;
-    justify-content: center;
-    color: #b6c2cf;
-    font-size: 14px;
-    font-weight: 500;
-}
+
+        .board-card.create {
+            background: #22272b;
+            border: 2px dashed #38414a;
+            display: flex;
+            /* Add these two lines */
+            flex-direction: column;
+            text-align: center;
+
+            align-items: center;
+            justify-content: center;
+            color: #b6c2cf;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
         .board-card.create:hover {
             background: #2c333a;
             border-color: #45505c;
         }
+
         .members-section {
             background: #22272b;
             border-radius: 8px;
             padding: 24px;
             margin-bottom: 32px;
         }
+
         .members-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 16px;
             margin-top: 16px;
         }
+
         .member-card {
             background: #2c333a;
             padding: 12px 16px;
@@ -189,6 +306,7 @@
             gap: 12px;
             overflow: visible;
         }
+
         .member-avatar {
             width: 40px;
             height: 40px;
@@ -201,13 +319,28 @@
             text-transform: uppercase;
             flex-shrink: 0;
         }
-        .member-info { flex: 1; min-width: 0; overflow: hidden; }
-        .member-name { font-weight: 600; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px; }
+
+        .member-info {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .member-name {
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100px;
+        }
+
         .member-role {
             font-size: 12px;
             color: #9fadbc;
             text-transform: capitalize;
         }
+
         /* Modal Styles */
         .modal-overlay {
             position: fixed;
@@ -336,11 +469,25 @@
             height: 100%;
         }
 
-        .bg-blue { background: linear-gradient(135deg, #0052cc 0%, #0065ff 100%); }
-        .bg-light-blue { background: linear-gradient(135deg, #0c66e4 0%, #1c88ff 100%); }
-        .bg-medium-blue { background: linear-gradient(135deg, #1c88ff 0%, #4db8ff 100%); }
-        .bg-purple-pink { background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%); }
-        .bg-pink-purple { background: linear-gradient(135deg, #ec4899 0%, #7c3aed 100%); }
+        .bg-blue {
+            background: linear-gradient(135deg, #0052cc 0%, #0065ff 100%);
+        }
+
+        .bg-light-blue {
+            background: linear-gradient(135deg, #0c66e4 0%, #1c88ff 100%);
+        }
+
+        .bg-medium-blue {
+            background: linear-gradient(135deg, #1c88ff 0%, #4db8ff 100%);
+        }
+
+        .bg-purple-pink {
+            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+        }
+
+        .bg-pink-purple {
+            background: linear-gradient(135deg, #ec4899 0%, #7c3aed 100%);
+        }
 
         .modal-form-group {
             margin-bottom: 16px;
@@ -422,11 +569,18 @@
         }
 
         @media (max-width: 768px) {
-            .container { padding: 16px; }
-            .boards-grid { grid-template-columns: 1fr; }
+            .container {
+                padding: 16px;
+            }
+
+            .boards-grid {
+                grid-template-columns: 1fr;
+            }
+
             .background-grid {
                 grid-template-columns: repeat(4, 1fr);
             }
+
             .create-board-modal {
                 max-width: 90%;
                 margin: 20px;
@@ -434,16 +588,20 @@
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <div class="header-left">
+            <!-- zeeshan -->
             <a href="{{ route('dashboard') }}" class="btn btn-secondary">← Back</a>
             <div class="workspace-info">
                 <div class="workspace-icon {{ $workspace->color }}">{!! $workspace->display_icon !!}</div>
                 <div>
                     <div class="workspace-name">{{ $workspace->name }}</div>
                     @if($workspace->description)
-                        <div style="font-size: 12px; color: #9fadbc; margin-top: 4px; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $workspace->description }}</div>
+                        <div
+                            style="font-size: 12px; color: #9fadbc; margin-top: 4px; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {{ $workspace->description }}</div>
                     @endif
                 </div>
             </div>
@@ -454,10 +612,10 @@
             @endif
             @if($userRole === 'owner')
                 <!-- <form id="deleteWorkspaceForm" method="POST" action="{{ route('workspaces.destroy', $workspace) }}" style="display: inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="button" class="btn btn-secondary" style="background: #c9372c; color: white; border-color: #c9372c;" onconfirmDeleteWorkspace()click="">Delete</button>
-                </form> -->
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" class="btn btn-secondary" style="background: #c9372c; color: white; border-color: #c9372c;" onconfirmDeleteWorkspace()click="">Delete</button>
+                    </form> -->
             @endif
             <div class="user-avatar-header" id="userAvatar" onclick="toggleUserDropdown()">
                 {{ substr(auth()->user()->name, 0, 2) }}
@@ -471,7 +629,8 @@
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                         @csrf
                     </form>
-                    <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <a href="#" class="dropdown-item"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         Log out
                     </a>
                 </div>
@@ -482,74 +641,84 @@
     <div class="container">
         <!-- Members Section -->
         @if($userRole === 'owner' || $userRole === 'admin')
-        <div class="members-section">
-            <h2 class="section-title">Members (<span id="memberCount">{{ $workspace->member_count }}</span>)</h2>
-            <div class="members-grid" id="membersGrid">
-                @foreach($workspace->users as $member)
-                    <div class="member-card" id="member-card-{{ $member->id }}">
-                        @php
-                            $avatarColors = ['#0052cc','#c9372c','#7c3aed','#0c66e4','#f97316','#ec4899','#0e7490','#15803d','#b45309','#6d28d9'];
-                            $avatarColor = $avatarColors[$member->id % count($avatarColors)];
-                        @endphp
-                        <div class="member-avatar" style="background: {{ $avatarColor }};">{{ substr($member->name, 0, 2) }}</div>
-                        <div class="member-info">
-                            <div class="member-name">{{ $member->name }}</div>
-                            <div class="member-role">{{ $member->pivot->role }}</div>
-                        </div>
-                        @if($member->pivot->role !== 'owner')
-                        <div style="position: relative; margin-left: auto; flex-shrink: 0; align-self: center;">
-                            <button onclick="toggleMemberMenu({{ $member->id }})" style="background: none; border: none; color: #9fadbc; cursor: pointer; padding: 4px 6px; border-radius: 4px; font-size: 16px; line-height: 1;" title="Options">⋯</button>
-                            <div id="member-menu-{{ $member->id }}" style="display:none; position: absolute; right: 0; top: 28px; background: #2c333a; border: 1px solid #38414a; border-radius: 6px; min-width: 130px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
-                                <div onclick="removeMemberAjax({{ $workspace->id }}, {{ $member->id }}, '{{ csrf_token() }}')" style="width: 100%; text-align: left; padding: 10px 14px; color: #f87171; cursor: pointer; font-size: 13px; border-radius: 6px;" onmouseover="this.style.background='#3c444d'" onmouseout="this.style.background='transparent'">Remove</div>
+            <div class="members-section">
+                <h2 class="section-title">Members (<span id="memberCount">{{ $workspace->member_count }}</span>)</h2>
+                <div class="members-grid" id="membersGrid">
+                    @foreach($workspace->users as $member)
+                        <div class="member-card" id="member-card-{{ $member->id }}">
+                            @php
+                                $avatarColors = ['#0052cc', '#c9372c', '#7c3aed', '#0c66e4', '#f97316', '#ec4899', '#0e7490', '#15803d', '#b45309', '#6d28d9'];
+                                $avatarColor = $avatarColors[$member->id % count($avatarColors)];
+                            @endphp
+                            <div class="member-avatar" style="background: {{ $avatarColor }};">{{ substr($member->name, 0, 2) }}
                             </div>
+                            <div class="member-info">
+                                <div class="member-name">{{ $member->name }}</div>
+                                <div class="member-role">{{ $member->pivot->role }}</div>
+                            </div>
+                            @if($member->pivot->role !== 'owner')
+                                <div style="position: relative; margin-left: auto; flex-shrink: 0; align-self: center;">
+                                    <button onclick="toggleMemberMenu({{ $member->id }})"
+                                        style="background: none; border: none; color: #9fadbc; cursor: pointer; padding: 4px 6px; border-radius: 4px; font-size: 16px; line-height: 1;"
+                                        title="Options">⋯</button>
+                                    <div id="member-menu-{{ $member->id }}"
+                                        style="display:none; position: absolute; right: 0; top: 28px; background: #2c333a; border: 1px solid #38414a; border-radius: 6px; min-width: 130px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
+                                        <div onclick="removeMemberAjax({{ $workspace->id }}, {{ $member->id }}, '{{ csrf_token() }}')"
+                                            style="width: 100%; text-align: left; padding: 10px 14px; color: #f87171; cursor: pointer; font-size: 13px; border-radius: 6px;"
+                                            onmouseover="this.style.background='#3c444d'"
+                                            onmouseout="this.style.background='transparent'">Remove</div>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
+                    @endforeach
+                </div>
+
+                <!-- Board Access Feedback (toast) -->
+                <div id="board-access-feedback" style="display:none;"></div>
+
+                <div style="margin-top: 24px; position: relative;">
+                    <input id="grantSearchInput" type="text" placeholder="Search member by name or email..."
+                        autocomplete="off" spellcheck="false" oninput="filterGrantUsers(this.value)"
+                        onfocus="if(this.value.trim().length > 0) filterGrantUsers(this.value)"
+                        style="width: 100%; padding: 12px 14px 12px 40px; background: #1d2125; border: 1px solid #38414a; border-radius: 8px; color: #b6c2cf; font-size: 14px; outline: none; box-sizing: border-box; transition: all 0.2s;"
+                        onfocus="this.style.borderColor='#0052cc'; this.style.boxShadow='0 0 0 2px rgba(0,82,204,0.2)'"
+                        onblur="this.style.borderColor='#38414a'; this.style.boxShadow='none'" />
+                    <span
+                        style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#9fadbc; pointer-events:none; display:flex; align-items:center;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                    </span>
+                    <div id="grantDropdown"
+                        style="display:none; position: absolute; top: 44px; left: 0; background: #22272b; border: 1px solid #38414a; border-radius: 8px; width: 100%; box-shadow: 0 8px 16px rgba(0,0,0,0.4); z-index: 200; padding: 8px 0; max-height: 260px; overflow-y: auto;">
+                        @foreach($grantableUsers as $gu)
+                            <div class="grant-user-item"
+                                onclick="selectGrantUser({{ $gu->id }}, '{{ addslashes($gu->name) }}', {{ $workspace->id }}, '{{ csrf_token() }}')"
+                                data-uid="{{ $gu->id }}" data-name="{{ strtolower($gu->name) }}"
+                                data-email="{{ strtolower($gu->email) }}"
+                                style="padding: 10px 14px; cursor: pointer; color: #b6c2cf; font-size: 14px; display: flex; align-items: center; gap: 10px; border-radius: 6px; margin: 0 4px;"
+                                onmouseover="this.style.background='#2c333a'" onmouseout="this.style.background='transparent'">
+                                <div
+                                    style="width: 32px; height: 32px; border-radius: 50%; background: #0052cc; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12px; flex-shrink: 0;">
+                                    {{ strtoupper(substr($gu->name, 0, 2)) }}</div>
+                                <div style="flex:1;">
+                                    <div style="font-weight: 500; color: white;">{{ $gu->name }}</div>
+                                    <div style="font-size: 11px; color: #9fadbc;">{{ $gu->email }}</div>
+                                </div>
+                            </div>
+                        @endforeach
+                        <div id="grantNoResults" style="display:none; padding: 10px 14px; color: #9fadbc; font-size: 13px;">
+                            No members found</div>
+                        @if($grantableUsers->count() === 0)
+                            <div style="padding: 10px 14px; color: #9fadbc; font-size: 13px;">All members already have access
+                            </div>
                         @endif
                     </div>
-                @endforeach
-            </div>
-
-            <!-- Board Access Feedback (toast) -->
-            <div id="board-access-feedback" style="display:none;"></div>
-
-            <div style="margin-top: 24px; position: relative;">
-                <input
-                    id="grantSearchInput"
-                    type="text"
-                    placeholder="Search member by name or email..."
-                    autocomplete="off"
-                    spellcheck="false"
-                    oninput="filterGrantUsers(this.value)"
-                    onfocus="if(this.value.trim().length > 0) filterGrantUsers(this.value)"
-                    style="width: 100%; padding: 12px 14px 12px 40px; background: #1d2125; border: 1px solid #38414a; border-radius: 8px; color: #b6c2cf; font-size: 14px; outline: none; box-sizing: border-box; transition: all 0.2s;"
-                    onfocus="this.style.borderColor='#0052cc'; this.style.boxShadow='0 0 0 2px rgba(0,82,204,0.2)'"
-                    onblur="this.style.borderColor='#38414a'; this.style.boxShadow='none'"
-                />
-                <span style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#9fadbc; pointer-events:none; display:flex; align-items:center;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                </span>
-                <div id="grantDropdown" style="display:none; position: absolute; top: 44px; left: 0; background: #22272b; border: 1px solid #38414a; border-radius: 8px; width: 100%; box-shadow: 0 8px 16px rgba(0,0,0,0.4); z-index: 200; padding: 8px 0; max-height: 260px; overflow-y: auto;">
-                    @foreach($grantableUsers as $gu)
-                    <div class="grant-user-item"
-                        onclick="selectGrantUser({{ $gu->id }}, '{{ addslashes($gu->name) }}', {{ $workspace->id }}, '{{ csrf_token() }}')"
-                        data-uid="{{ $gu->id }}"
-                        data-name="{{ strtolower($gu->name) }}"
-                        data-email="{{ strtolower($gu->email) }}"
-                        style="padding: 10px 14px; cursor: pointer; color: #b6c2cf; font-size: 14px; display: flex; align-items: center; gap: 10px; border-radius: 6px; margin: 0 4px;"
-                        onmouseover="this.style.background='#2c333a'" onmouseout="this.style.background='transparent'">
-                        <div style="width: 32px; height: 32px; border-radius: 50%; background: #0052cc; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12px; flex-shrink: 0;">{{ strtoupper(substr($gu->name, 0, 2)) }}</div>
-                        <div style="flex:1;">
-                            <div style="font-weight: 500; color: white;">{{ $gu->name }}</div>
-                            <div style="font-size: 11px; color: #9fadbc;">{{ $gu->email }}</div>
-                        </div>
-                    </div>
-                    @endforeach
-                    <div id="grantNoResults" style="display:none; padding: 10px 14px; color: #9fadbc; font-size: 13px;">No members found</div>
-                    @if($grantableUsers->count() === 0)
-                    <div style="padding: 10px 14px; color: #9fadbc; font-size: 13px;">All members already have access</div>
-                    @endif
                 </div>
             </div>
-        </div>
         @endif
 
         <!-- Boards Section -->
@@ -577,13 +746,15 @@
                 @endforeach
 
                 @if($isWorkspaceMember)
-                    <div class="board-card create" onclick="openCreateBoardModal({{ $workspace->id }})" style="cursor: pointer;">
+                    <div class="board-card create" onclick="openCreateBoardModal({{ $workspace->id }})"
+                        style="cursor: pointer;">
                         <div>Create new board</div>
                         @php
                             $remainingBoards = 10 - $workspace->boards()->where('is_archived', false)->count();
                         @endphp
                         @if($remainingBoards > 0)
-                            <div style="font-size: 12px; margin-top: 4px; color: #6b778c;">{{ $remainingBoards }} remaining</div>
+                            <div style="font-size: 12px; margin-top: 4px; color: #6b778c;">{{ $remainingBoards }} remaining
+                            </div>
                         @endif
                     </div>
                 @endif
@@ -597,28 +768,36 @@
             <div class="boards-grid">
                 @foreach($clients as $client)
                     <a href="{{ route('clients.show', $client) }}" style="text-decoration: none;">
-                        <div class="board-card client-card" style="position: relative; background: #22272b; border: 1px solid #38414a; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; height: auto; min-height: 160px;">
-                            <div style="width: 70px; height: 70px; border-radius: 50%; overflow: hidden; border: 3px solid #38414a; margin-bottom: 12px; background: #1d2125; display: flex; align-items: center; justify-content: center;">
+                        <div class="board-card client-card"
+                            style="position: relative; background: #22272b; border: 1px solid #38414a; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; text-align: center; height: 170px; transition: transform 0.2s, border-color 0.2s;">
+                            <div
+                                style="width: 70px; height: 70px; border-radius: 50%; overflow: hidden; border: 3px solid #38414a; margin-bottom: 12px; background: #1d2125; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                                 @if($client->image_path)
-                                    <img src="{{ Storage::url($client->image_path) }}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                    <div class="board-card-gradient" style="display: none; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: white;">
+                                    <img src="{{ Storage::url($client->image_path) }}"
+                                        style="width: 100%; height: 100%; object-fit: cover;"
+                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="board-card-gradient"
+                                        style="display: none; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: white;">
                                         {{ strtoupper(substr($client->name, 0, 1)) }}
                                     </div>
                                 @else
-                                    <div class="board-card-gradient" style="display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: white;">
+                                    <div class="board-card-gradient"
+                                        style="display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: white;">
                                         {{ strtoupper(substr($client->name, 0, 1)) }}
                                     </div>
                                 @endif
                             </div>
-                            <div style="z-index: 1;">
-                                <div style="font-weight: 700; color: white; font-size: 15px;">{{ $client->name }}</div>
-                                <div style="font-size: 11px; font-weight: 400; color: #9fadbc; margin-top: 4px;">{{ $client->email }}</div>
+                            <div style="z-index: 1; width: 100%; overflow: hidden;">
+                                <div style="font-weight: 700; color: white; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $client->name }}">{{ $client->name }}</div>
+                                <div style="font-size: 11px; font-weight: 400; color: #9fadbc; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $client->email }}">
+                                    {{ $client->email }}</div>
                             </div>
                         </div>
                     </a>
                 @endforeach
 
-                <div class="board-card create" onclick="openClientModal()" style="cursor: pointer; background: #1d2125; border: 2px dashed #38414a; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 160px;">
+                <div class="board-card create" onclick="openClientModal()"
+                    style="cursor: pointer; background: #1d2125; border: 2px dashed #38414a; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 170px;">
                     <div style="font-size: 14px; font-weight: 600; color: #9fadbc;">Add Client</div>
                 </div>
             </div>
@@ -643,23 +822,34 @@
 
                     <!-- Background Selection -->
                     <div style="margin-bottom: 16px;">
-                        <div style="font-size: 14px; font-weight: 600; color: #b6c2cf; margin-bottom: 10px;">Background</div>
+                        <div style="font-size: 14px; font-weight: 600; color: #b6c2cf; margin-bottom: 10px;">Background
+                        </div>
                         <div class="background-grid">
                             <!-- Images -->
-                            <div class="background-option selected" data-type="image" data-value="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=200&fit=crop">
-                                <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=100&h=100&fit=crop" alt="Mountains">
+                            <div class="background-option selected" data-type="image"
+                                data-value="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=200&fit=crop">
+                                <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=100&h=100&fit=crop"
+                                    alt="Mountains">
                             </div>
-                            <div class="background-option" data-type="image" data-value="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=200&fit=crop">
-                                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=100&h=100&fit=crop" alt="Sunset">
+                            <div class="background-option" data-type="image"
+                                data-value="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=200&fit=crop">
+                                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=100&h=100&fit=crop"
+                                    alt="Sunset">
                             </div>
-                            <div class="background-option" data-type="image" data-value="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=200&fit=crop">
-                                <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=100&h=100&fit=crop" alt="Forest">
+                            <div class="background-option" data-type="image"
+                                data-value="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=200&fit=crop">
+                                <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=100&h=100&fit=crop"
+                                    alt="Forest">
                             </div>
-                            <div class="background-option" data-type="image" data-value="https://images.unsplash.com/photo-1448375240586-882707db888b?w=400&h=200&fit=crop">
-                                <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?w=100&h=100&fit=crop" alt="Road">
+                            <div class="background-option" data-type="image"
+                                data-value="https://images.unsplash.com/photo-1448375240586-882707db888b?w=400&h=200&fit=crop">
+                                <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?w=100&h=100&fit=crop"
+                                    alt="Road">
                             </div>
-                            <div class="background-option" data-type="image" data-value="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=200&fit=crop">
-                                <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=100&h=100&fit=crop" alt="Ocean">
+                            <div class="background-option" data-type="image"
+                                data-value="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=200&fit=crop">
+                                <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=100&h=100&fit=crop"
+                                    alt="Ocean">
                             </div>
                             <!-- Gradients -->
                             <div class="background-option" data-type="gradient" data-value="blue">
@@ -667,7 +857,8 @@
                             </div>
                         </div>
                         <input type="hidden" name="background_type" id="backgroundTypeModal" value="image">
-                        <input type="hidden" name="background_value" id="backgroundValueModal" value="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=200&fit=crop">
+                        <input type="hidden" name="background_value" id="backgroundValueModal"
+                            value="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=200&fit=crop">
                     </div>
 
                     <!-- Board Title -->
@@ -675,14 +866,8 @@
                         <label for="nameModal">
                             Board title <span class="required">*</span>
                         </label>
-                        <input 
-                            type="text" 
-                            id="nameModal" 
-                            name="name" 
-                            required
-                            placeholder="Enter board title"
-                            autofocus
-                        >
+                        <input type="text" id="nameModal" name="name" required placeholder="Enter board title"
+                            autofocus>
                         <div class="error-message-modal" id="titleErrorModal" style="display: none;">
                             <span>⚠</span> Board title is required
                         </div>
@@ -718,7 +903,9 @@
 
                     <!-- Workspace Info -->
                     <div class="workspace-info-modal">
-                        <p>This Workspace has <strong id="remainingBoardsCount">{{ 10 - $workspace->boards()->where('is_archived', false)->count() }}</strong> boards remaining.</p>
+                        <p>This Workspace has <strong
+                                id="remainingBoardsCount">{{ 10 - $workspace->boards()->where('is_archived', false)->count() }}</strong>
+                            boards remaining.</p>
                         <p>Free Workspaces can only have 10 open boards.</p>
                     </div>
 
@@ -752,7 +939,8 @@
                     </div>
                     <div class="modal-form-group">
                         <label>Email <span class="required">*</span></label>
-                        <input type="email" name="email" required placeholder="client@example.com" style="width: 100%; padding: 10px 12px; background: #1d2125; border: 2px solid #38414a; border-radius: 4px; color: #b6c2cf; font-size: 14px;">
+                        <input type="email" name="email" required placeholder="client@example.com"
+                            style="width: 100%; padding: 10px 12px; background: #1d2125; border: 2px solid #38414a; border-radius: 4px; color: #b6c2cf; font-size: 14px;">
                     </div>
                     <div class="modal-form-group">
                         <label>Father Name</label>
@@ -783,11 +971,11 @@
         function openCreateBoardModal(workspaceId = null) {
             const modal = document.getElementById('createBoardModal');
             modal.classList.add('active');
-            
+
             if (workspaceId) {
                 document.getElementById('workspace_idModal').value = workspaceId;
             }
-            
+
             document.getElementById('nameModal').focus();
         }
 
@@ -797,7 +985,7 @@
             document.getElementById('titleErrorModal').style.display = 'none';
             document.getElementById('nameModal').classList.remove('error');
             document.getElementById('submitBtnModal').disabled = false;
-            
+
             // Reset to first selected background
             document.querySelectorAll('.background-option').forEach(opt => opt.classList.remove('selected'));
             document.querySelector('.background-option').classList.add('selected');
@@ -810,7 +998,7 @@
             const preview = document.getElementById('boardPreviewModal');
             const title = document.getElementById('previewTitleModal').textContent || 'Board title';
             preview.innerHTML = '<div class="board-preview-content" id="previewTitleModal">' + title + '</div>';
-            
+
             if (type === 'image') {
                 preview.style.backgroundImage = `url(${value})`;
                 preview.style.backgroundSize = 'cover';
@@ -829,27 +1017,27 @@
 
         // Background selection
         document.querySelectorAll('.background-option').forEach(option => {
-            option.addEventListener('click', function() {
+            option.addEventListener('click', function () {
                 document.querySelectorAll('.background-option').forEach(opt => opt.classList.remove('selected'));
                 this.classList.add('selected');
-                
+
                 const type = this.dataset.type;
                 const value = this.dataset.value;
-                
+
                 document.getElementById('backgroundTypeModal').value = type;
                 document.getElementById('backgroundValueModal').value = value;
-                
+
                 updatePreview(type, value);
             });
         });
 
         // Board title preview update
-        document.getElementById('nameModal').addEventListener('input', function() {
+        document.getElementById('nameModal').addEventListener('input', function () {
             const previewTitle = document.getElementById('previewTitleModal');
             if (previewTitle) {
                 previewTitle.textContent = this.value || 'Board title';
             }
-            
+
             // Validation
             const titleError = document.getElementById('titleErrorModal');
             const submitBtn = document.getElementById('submitBtnModal');
@@ -865,7 +1053,7 @@
         });
 
         // Form validation on submit
-        document.getElementById('boardFormModal').addEventListener('submit', function(e) {
+        document.getElementById('boardFormModal').addEventListener('submit', function (e) {
             const nameInput = document.getElementById('nameModal');
             if (!nameInput.value.trim()) {
                 e.preventDefault();
@@ -876,14 +1064,14 @@
         });
 
         // Close modal on overlay click
-        document.getElementById('createBoardModal').addEventListener('click', function(e) {
+        document.getElementById('createBoardModal').addEventListener('click', function (e) {
             if (e.target === this) {
                 closeCreateBoardModal();
             }
         });
 
         // Close on Escape key
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 closeCreateBoardModal();
             }
@@ -900,18 +1088,18 @@
                     'Content-Type': 'application/json',
                 },
             })
-            .then(res => res.json())
-            .then(data => {
-                showBoardAccessFeedback(data.success, data.message);
-                if (data.success) {
-                    // Add member card to grid if not already there
-                    if (!document.getElementById('member-card-' + userId)) {
-                        const grid = document.getElementById('membersGrid');
-                        const initials = userName.substring(0, 2).toUpperCase();
-                        const card = document.createElement('div');
-                        card.className = 'member-card';
-                        card.id = 'member-card-' + userId;
-                        card.innerHTML = `
+                .then(res => res.json())
+                .then(data => {
+                    showBoardAccessFeedback(data.success, data.message);
+                    if (data.success) {
+                        // Add member card to grid if not already there
+                        if (!document.getElementById('member-card-' + userId)) {
+                            const grid = document.getElementById('membersGrid');
+                            const initials = userName.substring(0, 2).toUpperCase();
+                            const card = document.createElement('div');
+                            card.className = 'member-card';
+                            card.id = 'member-card-' + userId;
+                            card.innerHTML = `
                             <div class="member-avatar">${initials}</div>
                             <div class="member-info">
                                 <div class="member-name">${userName}</div>
@@ -923,21 +1111,21 @@
                                     <div onclick="removeMemberAjax(${workspaceId}, ${userId}, '${csrfToken}')" style="width: 100%; text-align: left; padding: 10px 14px; color: #f87171; cursor: pointer; font-size: 13px; border-radius: 6px;" onmouseover="this.style.background='#3c444d'" onmouseout="this.style.background='transparent'">Remove</div>
                                 </div>
                             </div>`;
-                        grid.appendChild(card);
-                        // Update count
-                        const countEl = document.getElementById('memberCount');
-                        if (countEl) countEl.textContent = parseInt(countEl.textContent) + 1;
+                            grid.appendChild(card);
+                            // Update count
+                            const countEl = document.getElementById('memberCount');
+                            if (countEl) countEl.textContent = parseInt(countEl.textContent) + 1;
+                        }
+                        // Remove from dropdown
+                        const dropdown = document.getElementById('grantDropdown');
+                        if (dropdown) {
+                            const items = dropdown.querySelectorAll('[data-uid]');
+                            items.forEach(i => { if (i.dataset.uid == userId) i.remove(); });
+                        }
+                        document.getElementById('grantSearchInput').value = '';
                     }
-                    // Remove from dropdown
-                    const dropdown = document.getElementById('grantDropdown');
-                    if (dropdown) {
-                        const items = dropdown.querySelectorAll('[data-uid]');
-                        items.forEach(i => { if (i.dataset.uid == userId) i.remove(); });
-                    }
-                    document.getElementById('grantSearchInput').value = '';
-                }
-            })
-            .catch(() => showBoardAccessFeedback(false, 'An unexpected error occurred.'));
+                })
+                .catch(() => showBoardAccessFeedback(false, 'An unexpected error occurred.'));
         }
 
         function selectGrantUser(userId, userName, workspaceId, csrfToken) {
@@ -991,30 +1179,30 @@
                     headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json', 'Content-Type': 'application/json' },
                     body: JSON.stringify({ _method: 'DELETE' })
                 })
-                .then(r => r.ok ? r.json() : Promise.reject())
-                .then(() => {
-                    if (card) card.remove();
-                    const countEl = document.getElementById('memberCount');
-                    if (countEl) countEl.textContent = parseInt(countEl.textContent) - 1;
-                    // Add back to search dropdown
-                    const dropdown = document.getElementById('grantDropdown');
-                    if (dropdown && name) {
-                        const initials = name.substring(0, 2).toUpperCase();
-                        const item = document.createElement('div');
-                        item.className = 'grant-user-item';
-                        item.dataset.uid = userId;
-                        item.dataset.name = name.toLowerCase();
-                        item.dataset.email = '';
-                        item.style.cssText = 'padding:10px 14px; cursor:pointer; color:#b6c2cf; font-size:14px; display:none; align-items:center; gap:10px; border-radius:6px; margin:0 4px;';
-                        item.innerHTML = `<div style="width:32px;height:32px;border-radius:50%;background:#0052cc;color:white;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;flex-shrink:0;">${initials}</div><div style="flex:1;"><div style="font-weight:500;color:white;">${name}</div></div>`;
-                        item.onmouseover = () => item.style.background = '#2c333a';
-                        item.onmouseout = () => item.style.background = 'transparent';
-                        item.onclick = () => selectGrantUser(userId, name, workspaceId, csrfToken);
-                        dropdown.appendChild(item);
-                    }
-                    showBoardAccessFeedback(true, 'Access removed successfully.');
-                })
-                .catch(() => showBoardAccessFeedback(false, 'Could not remove member.'));
+                    .then(r => r.ok ? r.json() : Promise.reject())
+                    .then(() => {
+                        if (card) card.remove();
+                        const countEl = document.getElementById('memberCount');
+                        if (countEl) countEl.textContent = parseInt(countEl.textContent) - 1;
+                        // Add back to search dropdown
+                        const dropdown = document.getElementById('grantDropdown');
+                        if (dropdown && name) {
+                            const initials = name.substring(0, 2).toUpperCase();
+                            const item = document.createElement('div');
+                            item.className = 'grant-user-item';
+                            item.dataset.uid = userId;
+                            item.dataset.name = name.toLowerCase();
+                            item.dataset.email = '';
+                            item.style.cssText = 'padding:10px 14px; cursor:pointer; color:#b6c2cf; font-size:14px; display:none; align-items:center; gap:10px; border-radius:6px; margin:0 4px;';
+                            item.innerHTML = `<div style="width:32px;height:32px;border-radius:50%;background:#0052cc;color:white;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;flex-shrink:0;">${initials}</div><div style="flex:1;"><div style="font-weight:500;color:white;">${name}</div></div>`;
+                            item.onmouseover = () => item.style.background = '#2c333a';
+                            item.onmouseout = () => item.style.background = 'transparent';
+                            item.onclick = () => selectGrantUser(userId, name, workspaceId, csrfToken);
+                            dropdown.appendChild(item);
+                        }
+                        showBoardAccessFeedback(true, 'Access removed successfully.');
+                    })
+                    .catch(() => showBoardAccessFeedback(false, 'Could not remove member.'));
             });
         }
 
@@ -1034,7 +1222,7 @@
         }
 
         // Close dropdowns on outside click
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (!e.target.closest('[id^="member-menu-"]') && !e.target.closest('button[onclick^="toggleMemberMenu"]')) {
                 document.querySelectorAll('[id^="member-menu-"]').forEach(m => m.style.display = 'none');
             }
@@ -1048,7 +1236,7 @@
         function toggleUserDropdown() {
             const dropdown = document.getElementById('userDropdown');
             dropdown.classList.toggle('active');
-            
+
             // Close when clicking outside
             if (dropdown.classList.contains('active')) {
                 const closeHandler = (e) => {
@@ -1082,4 +1270,5 @@
         }
     </script>
 </body>
+
 </html>

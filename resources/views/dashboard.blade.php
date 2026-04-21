@@ -1446,8 +1446,8 @@
             <div class="boards-grid">
                 @foreach($clients as $client)
                     <a href="{{ route('clients.show', $client) }}" style="text-decoration: none;">
-                        <div class="board-card client-card" data-client-id="{{ $client->id }}" style="position: relative; background: #22272b; border: 1px solid #38414a; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; text-align: center; height: auto; min-height: 160px;">
-                            <div style="width: 70px; height: 70px; border-radius: 50%; overflow: hidden; border: 3px solid #38414a; margin-bottom: 12px; background: #1d2125; display: flex; align-items: center; justify-content: center;">
+                        <div class="board-card client-card" data-client-id="{{ $client->id }}" style="position: relative; background: #22272b; border: 1px solid #38414a; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; text-align: center; height: 170px; transition: transform 0.2s, border-color 0.2s;">
+                            <div style="width: 70px; height: 70px; border-radius: 50%; overflow: hidden; border: 3px solid #38414a; margin-bottom: 12px; background: #1d2125; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                                 @if($client->image_path)
                                     <img src="{{ Storage::url($client->image_path) }}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                     <div class="board-card-gradient" style="display: none; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: white;">
@@ -1459,9 +1459,9 @@
                                     </div>
                                 @endif
                             </div>
-                            <div style="z-index: 1;">
-                                <div style="font-weight: 700; color: white; font-size: 15px;">{{ $client->name }}</div>
-                                <div style="font-size: 11px; font-weight: 400; color: #9fadbc; margin-top: 4px;">{{ $client->email }}</div>
+                            <div style="z-index: 1; width: 100%; overflow: hidden;">
+                                <div style="font-weight: 700; color: white; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $client->name }}">{{ $client->name }}</div>
+                                <div style="font-size: 11px; font-weight: 400; color: #9fadbc; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $client->email }}">{{ $client->email }}</div>
                             </div>
                         </div>
                     </a>
