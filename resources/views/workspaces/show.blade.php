@@ -597,26 +597,28 @@
             <div class="boards-grid">
                 @foreach($clients as $client)
                     <a href="{{ route('clients.show', $client) }}" style="text-decoration: none;">
-                        <div class="board-card client-card" style="position: relative; background: #22272b; border: 1px solid #38414a;">
-                            @if($client->image_path)
-                                <img src="{{ Storage::url($client->image_path) }}" class="board-card-image" style="object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <div class="board-card-gradient" style="display: none; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: rgba(255,255,255,0.8);">
-                                    {{ strtoupper(substr($client->name, 0, 1)) }}
-                                </div>
-                            @else
-                                <div class="board-card-gradient" style="display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: rgba(255,255,255,0.8);">
-                                    {{ strtoupper(substr($client->name, 0, 1)) }}
-                                </div>
-                            @endif
-                            <div class="board-card-title" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);">
-                                <div style="font-weight: 700;">{{ $client->name }}</div>
-                                <div style="font-size: 11px; font-weight: 400; opacity: 0.8; margin-top: 2px;">{{ $client->email }}</div>
+                        <div class="board-card client-card" style="position: relative; background: #22272b; border: 1px solid #38414a; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; height: auto; min-height: 160px;">
+                            <div style="width: 70px; height: 70px; border-radius: 50%; overflow: hidden; border: 3px solid #38414a; margin-bottom: 12px; background: #1d2125; display: flex; align-items: center; justify-content: center;">
+                                @if($client->image_path)
+                                    <img src="{{ Storage::url($client->image_path) }}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="board-card-gradient" style="display: none; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: white;">
+                                        {{ strtoupper(substr($client->name, 0, 1)) }}
+                                    </div>
+                                @else
+                                    <div class="board-card-gradient" style="display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: white;">
+                                        {{ strtoupper(substr($client->name, 0, 1)) }}
+                                    </div>
+                                @endif
+                            </div>
+                            <div style="z-index: 1;">
+                                <div style="font-weight: 700; color: white; font-size: 15px;">{{ $client->name }}</div>
+                                <div style="font-size: 11px; font-weight: 400; color: #9fadbc; margin-top: 4px;">{{ $client->email }}</div>
                             </div>
                         </div>
                     </a>
                 @endforeach
 
-                <div class="board-card create" onclick="openClientModal()" style="cursor: pointer; background: #1d2125; border: 2px dashed #38414a; height: 96px;">
+                <div class="board-card create" onclick="openClientModal()" style="cursor: pointer; background: #1d2125; border: 2px dashed #38414a; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 160px;">
                     <div style="font-size: 14px; font-weight: 600; color: #9fadbc;">Add Client</div>
                 </div>
             </div>

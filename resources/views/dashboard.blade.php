@@ -1172,9 +1172,9 @@
             <div id="dashSearchDropdown" style="display:none;position:fixed;background:#22272b;border:1px solid #454f59;border-radius:4px;z-index:9999;max-height:400px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.5);min-width:300px;"></div>
         </div>
         <div class="header-right">
-            <button type="button" class="btn-create" style="background: #579dff; margin-right: 8px;" onclick="document.getElementById('addClientModal').style.display='flex'">Add Client</button>
+            <button type="button" class="btn-create" style="background: #0052cc; margin-right: 8px;" onclick="document.getElementById('addClientModal').style.display='flex'">Add Client</button>
             @if($user->isSystemAdmin() || (is_array($canCreateBoardWorkspaceIds) && count($canCreateBoardWorkspaceIds) > 0))
-                <button type="button" class="btn-create" onclick="openCreateBoardModal()">Create</button>
+                <button type="button" class="btn-create" onclick="openCreateBoardModal()">Create</button> 
             @endif
             @include('partials.notification-bell')
             <div class="user-avatar-header" onclick="toggleUserDropdown()">
@@ -1325,59 +1325,7 @@
 
 
 
-<!-- Create Board Modal -->
-  <div class="modal" id="createBoardModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Create Board</h3>
-                <button class="modal-close" onclick="closeCreateBoardModal()">&times;</button>
-            </div>
-            <form action="{{ route('boards.store') }}" method="POST" id="createBoardForm">
-                @csrf
-                <div class="modal-body">
-                    <!-- Preview Card -->
-                    <div class="board-preview-card" id="boardPreview" style="background-color: #0c66e4;">
-                        <span class="board-preview-title" id="previewTitle">Board title</span>
-                    </div>
 
-                    <div class="form-group">
-                        <label class="bg-picker-label">Background</label>
-                        <div class="bg-options-grid">
-                            <!-- Photos -->
-                            <div class="bg-option active" data-type="image" data-value="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400&q=80" style="background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400&q=80')"></div>
-                            <div class="bg-option" data-type="image" data-value="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=400&q=80" style="background-image: url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=400&q=80')"></div>
-                            <div class="bg-option" data-type="image" data-value="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=400&q=80" style="background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=400&q=80')"></div>
-                            <div class="bg-option" data-type="image" data-value="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=400&q=80" style="background-image: url('https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=400&q=80')"></div>
-                            <!-- Gradients -->
-                            <div class="bg-option" data-type="gradient" data-value="blue" style="background: linear-gradient(135deg, #0079bf 0%, #5067c5 100%);"></div>
-                            <div class="bg-option" data-type="gradient" data-value="green" style="background: linear-gradient(135deg, #519839 0%, #4bbf6b 100%);"></div>
-                            <div class="bg-option" data-type="gradient" data-value="orange" style="background: linear-gradient(135deg, #d29034 0%, #f1bd6c 100%);"></div>
-                            <div class="bg-option" data-type="gradient" data-value="red" style="background: linear-gradient(135deg, #b04632 0%, #f26b52 100%);"></div>
-                        </div>
-                        <input type="hidden" name="background_type" id="bg_type" value="image">
-                        <input type="hidden" name="background_value" id="bg_value" value="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400&q=80">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="name" class="bg-picker-label">Board Title *</label>
-                        <input type="text" id="name" name="name" class="modal-input" placeholder="Enter board title" required oninput="document.getElementById('previewTitle').innerText = this.value || 'Board title'">
-                    </div>
-                    <div class="form-group">
-                        <label for="workspace_id" class="bg-picker-label">Workspace</label>
-                        <select id="workspace_id" name="workspace_id" class="modal-input" required>
-                            @foreach($canCreateBoardWorkspaces as $workspace)
-                                <option value="{{ $workspace->id }}">{{ $workspace->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-secondary" onclick="closeCreateBoardModal()">Cancel</button>
-                    <button type="submit" class="btn-create" style="background: #0c66e4;">Create Board</button>
-                </div>
-            </form>
-        </div>
-    </div>
     <!-- Create Workspace -->
 
 
@@ -1432,6 +1380,7 @@
         @endif
     </div>
 
+    <!-- Main Content -->
     <div class="main-content">
        <!-- Session Messages -->
         <div style="padding: 16px 16px 0 16px;">
@@ -1497,25 +1446,27 @@
             <div class="boards-grid">
                 @foreach($clients as $client)
                     <a href="{{ route('clients.show', $client) }}" style="text-decoration: none;">
-                        <div class="board-card client-card" data-client-id="{{ $client->id }}" style="position: relative; background: #22272b; border: 1px solid #38414a;">
-                            @if($client->image_path)
-                                <img src="{{ Storage::url($client->image_path) }}" class="board-card-image" style="object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <div class="board-card-gradient" style="display: none; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: rgba(255,255,255,0.8);">
-                                    {{ strtoupper(substr($client->name, 0, 1)) }}
-                                </div>
-                            @else
-                                <div class="board-card-gradient" style="display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: rgba(255,255,255,0.8);">
-                                    {{ strtoupper(substr($client->name, 0, 1)) }}
-                                </div>
-                            @endif
-                            <div class="board-card-title" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);">
-                                <div style="font-weight: 700;">{{ $client->name }}</div>
-                                <div style="font-size: 11px; font-weight: 400; opacity: 0.8; margin-top: 2px;">{{ $client->email }}</div>
+                        <div class="board-card client-card" data-client-id="{{ $client->id }}" style="position: relative; background: #22272b; border: 1px solid #38414a; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; text-align: center; height: auto; min-height: 160px;">
+                            <div style="width: 70px; height: 70px; border-radius: 50%; overflow: hidden; border: 3px solid #38414a; margin-bottom: 12px; background: #1d2125; display: flex; align-items: center; justify-content: center;">
+                                @if($client->image_path)
+                                    <img src="{{ Storage::url($client->image_path) }}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="board-card-gradient" style="display: none; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: white;">
+                                        {{ strtoupper(substr($client->name, 0, 1)) }}
+                                    </div>
+                                @else
+                                    <div class="board-card-gradient" style="display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: white;">
+                                        {{ strtoupper(substr($client->name, 0, 1)) }}
+                                    </div>
+                                @endif
+                            </div>
+                            <div style="z-index: 1;">
+                                <div style="font-weight: 700; color: white; font-size: 15px;">{{ $client->name }}</div>
+                                <div style="font-size: 11px; font-weight: 400; color: #9fadbc; margin-top: 4px;">{{ $client->email }}</div>
                             </div>
                         </div>
                     </a>
                 @endforeach
-                <div class="board-card create" onclick="openClientModal()" style="cursor: pointer; background: #1d2125; border: 2px dashed #38414a; height: 96px; display: flex; align-items: center; justify-content: center;">
+                <div class="board-card create" onclick="openClientModal()" style="cursor: pointer; background: #1d2125; border: 2px dashed #38414a; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 160px;">
                     <div style="font-size: 14px; font-weight: 600; color: #9fadbc;">Add Client</div>
                 </div>
             </div>
@@ -2517,12 +2468,61 @@ window.toggleNotifDropdown = function () {
 
         setInterval(checkBoardAccess, 5000);
     </script>
+
+    <!-- Create Board Modal -->
+    <div class="modal" id="createBoardModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create Board</h3>
+                <button class="modal-close" onclick="closeCreateBoardModal()">&times;</button>
+            </div>
+            <form action="{{ route('boards.store') }}" method="POST" id="createBoardForm">
+                @csrf
+                <div class="modal-body">
+                    <div class="board-preview-card" id="boardPreview" style="background-color: #0c66e4;">
+                        <span class="board-preview-title" id="previewTitle">Board title</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="bg-picker-label">Background</label>
+                        <div class="bg-options-grid">
+                            <div class="bg-option active" data-type="image" data-value="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400&q=80" style="background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400&q=80')"></div>
+                            <div class="bg-option" data-type="image" data-value="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=400&q=80" style="background-image: url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=400&q=80')"></div>
+                            <div class="bg-option" data-type="image" data-value="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=400&q=80" style="background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=400&q=80')"></div>
+                            <div class="bg-option" data-type="image" data-value="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=400&q=80" style="background-image: url('https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=400&q=80')"></div>
+                            <div class="bg-option" data-type="gradient" data-value="blue" style="background: linear-gradient(135deg, #0079bf 0%, #5067c5 100%);"></div>
+                            <div class="bg-option" data-type="gradient" data-value="green" style="background: linear-gradient(135deg, #519839 0%, #4bbf6b 100%);"></div>
+                            <div class="bg-option" data-type="gradient" data-value="orange" style="background: linear-gradient(135deg, #d29034 0%, #f1bd6c 100%);"></div>
+                            <div class="bg-option" data-type="gradient" data-value="red" style="background: linear-gradient(135deg, #b04632 0%, #f26b52 100%);"></div>
+                        </div>
+                        <input type="hidden" name="background_type" id="bg_type" value="image">
+                        <input type="hidden" name="background_value" id="bg_value" value="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400&q=80">
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="bg-picker-label">Board Title *</label>
+                        <input type="text" id="name" name="name" class="modal-input" placeholder="Enter board title" required oninput="document.getElementById('previewTitle').innerText = this.value || 'Board title'">
+                    </div>
+                    <div class="form-group">
+                        <label for="workspace_id" class="bg-picker-label">Workspace</label>
+                        <select id="workspace_id" name="workspace_id" class="modal-input" required>
+                            @foreach($canCreateBoardWorkspaces as $workspace)
+                                <option value="{{ $workspace->id }}">{{ $workspace->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeCreateBoardModal()">Cancel</button>
+                    <button type="submit" class="btn-create" style="background: #0c66e4;">Create Board</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <!-- Add Client Modal -->
     <div class="modal" id="addClientModal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Add New Client</h3>
-                <button class="modal-close" onclick="document.getElementById('addClientModal').style.display='none'">&times;</button>
+                <h3 class="modal-title">Add Client</h3>
+                <button class="modal-close" onclick="closeClientModal()">&times;</button>
             </div>
             <form action="{{ route('clients.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -2549,14 +2549,21 @@ window.toggleNotifDropdown = function () {
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn-secondary" onclick="document.getElementById('addClientModal').style.display='none'">Cancel</button>
-                    <button type="submit" class="btn-create" style="background: #579dff;">Add Client</button>
+                    <button type="button" class="btn-secondary" onclick="closeClientModal()">Cancel</button>
+                    <button type="submit" class="btn-create" style="background: #0052cc;">Add Client</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
+        function openClientModal() {
+            document.getElementById('addClientModal').style.display = 'flex';
+        }
+        function closeClientModal() {
+            document.getElementById('addClientModal').style.display = 'none';
+        }
+
         function filterByClient(clientId, clientName, boardIds) {
             // Show filter header
             document.getElementById('clientFilterHeader').style.display = 'flex';
