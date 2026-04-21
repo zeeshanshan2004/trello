@@ -224,7 +224,7 @@ class BoardController extends Controller
                 ->values()
                 ->toArray();
 
-            $clients = \App\Models\Client::all();
+            $clients = $board->workspace->clients()->get();
             return view('boards.show', compact('board', 'canEdit', 'boards', 'clients'));
         }
 

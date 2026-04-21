@@ -1172,7 +1172,7 @@
             <div id="dashSearchDropdown" style="display:none;position:fixed;background:#22272b;border:1px solid #454f59;border-radius:4px;z-index:9999;max-height:400px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.5);min-width:300px;"></div>
         </div>
         <div class="header-right">
-            <button type="button" class="btn-create" style="background: #0052cc; margin-right: 8px;" onclick="document.getElementById('addClientModal').style.display='flex'">Add Client</button>
+            <button type="button" class="btn-create" style="background: #0052cc; margin-right: 8px;" onclick="openClientModal()">Add Client</button>
             @if($user->isSystemAdmin() || (is_array($canCreateBoardWorkspaceIds) && count($canCreateBoardWorkspaceIds) > 0))
                 <button type="button" class="btn-create" onclick="openCreateBoardModal()">Create</button> 
             @endif
@@ -1439,39 +1439,7 @@
             <button onclick="clearClientFilter()" style="background: #2c333a; border: none; color: #b6c2cf; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 600;">Clear Filter</button>
         </div>
 
-        <!-- Clients Section -->
-        @if($clients->count() > 0)
-        <div class="section client-section">
-            <h2 class="section-header">Clients</h2>
-            <div class="boards-grid">
-                @foreach($clients as $client)
-                    <a href="{{ route('clients.show', $client) }}" style="text-decoration: none;">
-                        <div class="board-card client-card" data-client-id="{{ $client->id }}" style="position: relative; background: #22272b; border: 1px solid #38414a; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; text-align: center; height: 170px; transition: transform 0.2s, border-color 0.2s;">
-                            <div style="width: 70px; height: 70px; border-radius: 50%; overflow: hidden; border: 3px solid #38414a; margin-bottom: 12px; background: #1d2125; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                @if($client->image_path)
-                                    <img src="{{ Storage::url($client->image_path) }}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                    <div class="board-card-gradient" style="display: none; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: white;">
-                                        {{ strtoupper(substr($client->name, 0, 1)) }}
-                                    </div>
-                                @else
-                                    <div class="board-card-gradient" style="display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: white;">
-                                        {{ strtoupper(substr($client->name, 0, 1)) }}
-                                    </div>
-                                @endif
-                            </div>
-                            <div style="z-index: 1; width: 100%; overflow: hidden;">
-                                <div style="font-weight: 700; color: white; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $client->name }}">{{ $client->name }}</div>
-                                <div style="font-size: 11px; font-weight: 400; color: #9fadbc; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $client->email }}">{{ $client->email }}</div>
-                            </div>
-                        </div>
-                    </a>
-                @endforeach
-                <div class="board-card create" onclick="openClientModal()" style="cursor: pointer; background: #1d2125; border: 2px dashed #38414a; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 160px;">
-                    <div style="font-size: 14px; font-weight: 600; color: #9fadbc;">Add Client</div>
-                </div>
-            </div>
-        </div>
-        @endif
+
 
         <!-- Your Workspaces -->
         @php
@@ -1510,6 +1478,50 @@
                             </form>
                         </div>
                     @endif
+                </div>
+                {{-- Workspace Clients Section --}}
+                <div style="margin-top: 20px; margin-bottom: 12px; font-weight: 600; color: #9fadbc; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; padding-left: 4px; display: flex; align-items: center; gap: 8px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.7;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    Clients ({{ $workspace->clients->count() }})
+                </div>
+                <div class="boards-grid" style="margin-bottom: 30px;">
+                    @foreach($workspace->clients as $client)
+                        @php
+                            $firstBoard = $client->boards->first();
+                            $clientUrl = $firstBoard ? route('boards.show', $firstBoard) : route('clients.show', $client);
+                        @endphp
+                        <a href="{{ $clientUrl }}" style="text-decoration: none;">
+                            <div class="board-card client-card" data-client-id="{{ $client->id }}" style="position: relative; background: #22272b; border: 1px solid #38414a; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; text-align: center; height: 170px; transition: transform 0.2s, border-color 0.2s;">
+                                <div style="width: 70px; height: 70px; border-radius: 50%; overflow: hidden; border: 3px solid #38414a; margin-bottom: 12px; background: #1d2125; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    @if($client->image_path)
+                                        <img src="{{ Storage::url($client->image_path) }}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        <div class="board-card-gradient" style="display: none; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: white;">
+                                            {{ strtoupper(substr($client->name, 0, 1)) }}
+                                        </div>
+                                    @else
+                                        <div class="board-card-gradient" style="display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: white;">
+                                            {{ strtoupper(substr($client->name, 0, 1)) }}
+                                        </div>
+                                    @endif
+                                </div>
+                                <div style="z-index: 1; width: 100%; overflow: hidden;">
+                                    <div style="font-weight: 700; color: white; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $client->name }}">{{ $client->name }}</div>
+                                    <div style="font-size: 11px; font-weight: 400; color: #9fadbc; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $client->email }}">{{ $client->email }}</div>
+                                </div>
+                            </div>
+                        </a>
+                    @endforeach
+                    @if(Auth::user()->isSystemAdmin() || $workspace->isAdmin(Auth::id()))
+                        <div class="board-card create" onclick="openClientModal({{ $workspace->id }})" style="cursor: pointer; background: #1d2125; border: 2px dashed #38414a; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 170px;">
+                            <div style="font-size: 14px; font-weight: 600; color: #9fadbc;">Add Client</div>
+                        </div>
+                    @endif
+                </div>
+
+                {{-- Boards Section --}}
+                <div style="margin-top: 20px; margin-bottom: 12px; font-weight: 600; color: #9fadbc; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; padding-left: 4px; display: flex; align-items: center; gap: 8px;">
+                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.7;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                     Boards
                 </div>
                 <div class="boards-grid">
                     @foreach($workspaceBoards[$workspace->id] as $board)
@@ -1601,6 +1613,51 @@
                             </a>
                         </div>
                     @endforeach
+                </div>
+
+                {{-- Workspace Clients Section --}}
+                <div style="margin-top: 20px; margin-bottom: 12px; font-weight: 600; color: #9fadbc; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; padding-left: 4px; display: flex; align-items: center; gap: 8px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.7;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    Clients ({{ $workspace->clients->count() }})
+                </div>
+                <div class="boards-grid" style="margin-bottom: 30px;">
+                    @foreach($workspace->clients as $client)
+                        @php
+                            $firstBoard = $client->boards->first();
+                            $clientUrl = $firstBoard ? route('boards.show', $firstBoard) : route('clients.show', $client);
+                        @endphp
+                        <a href="{{ $clientUrl }}" style="text-decoration: none;">
+                            <div class="board-card client-card" data-client-id="{{ $client->id }}" style="position: relative; background: #22272b; border: 1px solid #38414a; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; text-align: center; height: 170px; transition: transform 0.2s, border-color 0.2s;">
+                                <div style="width: 70px; height: 70px; border-radius: 50%; overflow: hidden; border: 3px solid #38414a; margin-bottom: 12px; background: #1d2125; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    @if($client->image_path)
+                                        <img src="{{ Storage::url($client->image_path) }}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        <div class="board-card-gradient" style="display: none; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: white;">
+                                            {{ strtoupper(substr($client->name, 0, 1)) }}
+                                        </div>
+                                    @else
+                                        <div class="board-card-gradient" style="display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: white;">
+                                            {{ strtoupper(substr($client->name, 0, 1)) }}
+                                        </div>
+                                    @endif
+                                </div>
+                                <div style="z-index: 1; width: 100%; overflow: hidden;">
+                                    <div style="font-weight: 700; color: white; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $client->name }}">{{ $client->name }}</div>
+                                    <div style="font-size: 11px; font-weight: 400; color: #9fadbc; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $client->email }}">{{ $client->email }}</div>
+                                </div>
+                            </div>
+                        </a>
+                    @endforeach
+                    @if(Auth::user()->isSystemAdmin() || $workspace->isAdmin(Auth::id()))
+                        <div class="board-card create" onclick="openClientModal({{ $workspace->id }})" style="cursor: pointer; background: #1d2125; border: 2px dashed #38414a; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 170px;">
+                            <div style="font-size: 14px; font-weight: 600; color: #9fadbc;">Add Client</div>
+                        </div>
+                    @endif
+                </div>
+
+                {{-- Boards Section --}}
+                <div style="margin-top: 20px; margin-bottom: 12px; font-weight: 600; color: #9fadbc; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; padding-left: 4px; display: flex; align-items: center; gap: 8px;">
+                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.7;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                     Boards ({{ $workspaceBoards[$workspace->id]->count() }})
                 </div>
             </div>
             @endif
@@ -2526,6 +2583,7 @@ window.toggleNotifDropdown = function () {
             </div>
             <form action="{{ route('clients.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
+                <input type="hidden" name="workspace_id" id="client_workspace_id">
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="bg-picker-label">Client Image</label>
@@ -2547,6 +2605,15 @@ window.toggleNotifDropdown = function () {
                         <label class="bg-picker-label">Phone Number</label>
                         <input type="text" name="phone" class="modal-input" placeholder="Enter phone number">
                     </div>
+                    <div class="form-group" id="workspace_select_group">
+                        <label for="modal_workspace_id" class="bg-picker-label">Workspace *</label>
+                        <select id="modal_workspace_id" class="modal-input">
+                            <option value="">Select Workspace</option>
+                            @foreach($canCreateBoardWorkspaces as $ws)
+                                <option value="{{ $ws->id }}">{{ $ws->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-secondary" onclick="closeClientModal()">Cancel</button>
@@ -2557,7 +2624,27 @@ window.toggleNotifDropdown = function () {
     </div>
 
     <script>
-        function openClientModal() {
+        function openClientModal(workspaceId = null) {
+            const wsGroup = document.getElementById('workspace_select_group');
+            const wsSelect = document.getElementById('modal_workspace_id');
+            const hiddenWs = document.getElementById('client_workspace_id');
+            
+            if (workspaceId) {
+                hiddenWs.value = workspaceId;
+                if (wsGroup) wsGroup.style.display = 'none';
+                if (wsSelect) wsSelect.removeAttribute('required');
+            } else {
+                hiddenWs.value = '';
+                if (wsGroup) wsGroup.style.display = 'block';
+                if (wsSelect) wsSelect.setAttribute('required', 'required');
+                
+                // Add event listener to update hidden field when dropdown changes
+                if (wsSelect) {
+                    wsSelect.onchange = function() {
+                        hiddenWs.value = this.value;
+                    };
+                }
+            }
             document.getElementById('addClientModal').style.display = 'flex';
         }
         function closeClientModal() {

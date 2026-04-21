@@ -38,6 +38,14 @@ class Workspace extends Model
     }
 
     /**
+     * Get the clients for the workspace.
+     */
+    public function clients(): HasMany
+    {
+        return $this->hasMany(Client::class);
+    }
+
+    /**
      * Get the icon for workspace
      */
     public function getDisplayIconAttribute()

@@ -24,7 +24,7 @@ class DashboardController extends Controller
 
     private function adminDashboard($user)
     {
-        $workspaces = Workspace::with('boards')->get();
+        $workspaces = Workspace::with(['boards', 'clients.boards'])->get();
 
         $ownedWorkspaces = $user->workspaces()->wherePivotIn('role', ['owner', 'admin'])->get();
         $memberWorkspaces = Workspace::whereNotIn('id', $ownedWorkspaces->pluck('id'))->get();
@@ -55,7 +55,7 @@ class DashboardController extends Controller
             'myWorkspaceIds'            => $workspaces->pluck('id')->toArray(),
             'canCreateBoardWorkspaceIds'=> $workspaces->pluck('id')->toArray(),
             'allCards'                  => $this->getAllAdminCards(),
-            'clients'                   => Client::all(),
+            'clients'                   => collect(),
         ]);
     }
 
@@ -68,7 +68,7 @@ class DashboardController extends Controller
             ->toArray();
 
         // Workspaces user is a member of
-        $allUserWorkspaces = $user->workspaces()->with('users')->get();
+        $allUserWorkspaces = $user->workspaces()->with(['users', 'clients.boards'])->get();
 
         // Workspaces where user is owner/admin
         $ownerAdminWorkspaceIds = $allUserWorkspaces
@@ -105,8 +105,8 @@ class DashboardController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            // Only include workspace if it has at least one visible board
-            if ($boards->isNotEmpty()) {
+            // Include workspace if it has visible boards OR has clients
+            if ($boards->isNotEmpty() || $workspace->clients->count() > 0) {
                 $workspaceBoards[$workspace->id] = $boards;
             }
         }
@@ -145,7 +145,7 @@ class DashboardController extends Controller
             'myWorkspaceIds'            => $allUserWorkspaces->pluck('id')->toArray(),
             'canCreateBoardWorkspaceIds'=> $canCreateBoardWorkspaceIds,
             'allCards'                  => $this->getAllUserCards($user, $sharedBoardIds, $ownerAdminWorkspaceIds),
-            'clients'                   => Client::all(),
+            'clients'                   => collect(),
         ]);
     }
 

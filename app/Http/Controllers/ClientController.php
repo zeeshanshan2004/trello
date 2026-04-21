@@ -19,6 +19,7 @@ class ClientController extends Controller
             'father_name' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'workspace_id' => 'nullable|exists:workspaces,id',
         ]);
 
         $imagePath = null;
@@ -27,6 +28,7 @@ class ClientController extends Controller
         }
 
         Client::create([
+            'workspace_id' => $request->workspace_id,
             'name' => $request->name,
             'email' => $request->email,
             'father_name' => $request->father_name,

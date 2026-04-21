@@ -11,12 +11,21 @@ class Client extends Model
     use HasFactory;
 
     protected $fillable = [
+        'workspace_id',
         'name',
         'email',
         'father_name',
         'phone',
         'image_path',
     ];
+
+    /**
+     * Get the workspace that owns the client.
+     */
+    public function workspace()
+    {
+        return $this->belongsTo(Workspace::class);
+    }
 
     /**
      * Get the boards associated with the client.
