@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Board;
 use App\Models\Workspace;
 use App\Models\User;
+use App\Models\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -54,6 +55,7 @@ class DashboardController extends Controller
             'myWorkspaceIds'            => $workspaces->pluck('id')->toArray(),
             'canCreateBoardWorkspaceIds'=> $workspaces->pluck('id')->toArray(),
             'allCards'                  => $this->getAllAdminCards(),
+            'clients'                   => Client::all(),
         ]);
     }
 
@@ -143,6 +145,7 @@ class DashboardController extends Controller
             'myWorkspaceIds'            => $allUserWorkspaces->pluck('id')->toArray(),
             'canCreateBoardWorkspaceIds'=> $canCreateBoardWorkspaceIds,
             'allCards'                  => $this->getAllUserCards($user, $sharedBoardIds, $ownerAdminWorkspaceIds),
+            'clients'                   => Client::all(),
         ]);
     }
 

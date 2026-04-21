@@ -19,6 +19,7 @@ class Board extends Model
         'is_archived',
         'is_starred',
         'last_viewed_at',
+        'client_id',
     ];
 
     protected $casts = [
@@ -84,5 +85,13 @@ class Board extends Model
     public function joinRequests()
     {
         return $this->hasMany(BoardJoinRequest::class);
+    }
+
+    /**
+     * Get the client associated with the board.
+     */
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
     }
 }

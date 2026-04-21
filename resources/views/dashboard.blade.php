@@ -1172,6 +1172,7 @@
             <div id="dashSearchDropdown" style="display:none;position:fixed;background:#22272b;border:1px solid #454f59;border-radius:4px;z-index:9999;max-height:400px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.5);min-width:300px;"></div>
         </div>
         <div class="header-right">
+            <button type="button" class="btn-create" style="background: #579dff; margin-right: 8px;" onclick="document.getElementById('addClientModal').style.display='flex'">Add Client</button>
             @if($user->isSystemAdmin() || (is_array($canCreateBoardWorkspaceIds) && count($canCreateBoardWorkspaceIds) > 0))
                 <button type="button" class="btn-create" onclick="openCreateBoardModal()">Create</button>
             @endif
@@ -1473,6 +1474,50 @@
                         </div>
                     </a>
                 @endforeach
+            </div>
+        </div>
+        @endif
+
+        <!-- Filter Header (Hidden by default) -->
+        <div id="clientFilterHeader" style="display: none; align-items: center; justify-content: space-between; margin-bottom: 24px; padding: 12px 16px; background: #1c2125; border: 1px solid #579dff; border-radius: 8px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 8px; height: 32px; background: #579dff; border-radius: 4px;"></div>
+                <div>
+                    <div style="font-size: 12px; font-weight: 700; color: #579dff; text-transform: uppercase;">Filtered by Client</div>
+                    <div id="filterClientName" style="font-size: 18px; font-weight: 600; color: #b6c2cf;">Client Name</div>
+                </div>
+            </div>
+            <button onclick="clearClientFilter()" style="background: #2c333a; border: none; color: #b6c2cf; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 600;">Clear Filter</button>
+        </div>
+
+        <!-- Clients Section -->
+        @if($clients->count() > 0)
+        <div class="section client-section">
+            <h2 class="section-header">Clients</h2>
+            <div class="boards-grid">
+                @foreach($clients as $client)
+                    <a href="{{ route('clients.show', $client) }}" style="text-decoration: none;">
+                        <div class="board-card client-card" data-client-id="{{ $client->id }}" style="position: relative; background: #22272b; border: 1px solid #38414a;">
+                            @if($client->image_path)
+                                <img src="{{ Storage::url($client->image_path) }}" class="board-card-image" style="object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="board-card-gradient" style="display: none; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: rgba(255,255,255,0.8);">
+                                    {{ strtoupper(substr($client->name, 0, 1)) }}
+                                </div>
+                            @else
+                                <div class="board-card-gradient" style="display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: rgba(255,255,255,0.8);">
+                                    {{ strtoupper(substr($client->name, 0, 1)) }}
+                                </div>
+                            @endif
+                            <div class="board-card-title" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);">
+                                <div style="font-weight: 700;">{{ $client->name }}</div>
+                                <div style="font-size: 11px; font-weight: 400; opacity: 0.8; margin-top: 2px;">{{ $client->email }}</div>
+                            </div>
+                        </div>
+                    </a>
+                @endforeach
+                <div class="board-card create" onclick="openClientModal()" style="cursor: pointer; background: #1d2125; border: 2px dashed #38414a; height: 96px; display: flex; align-items: center; justify-content: center;">
+                    <div style="font-size: 14px; font-weight: 600; color: #9fadbc;">Add Client</div>
+                </div>
             </div>
         </div>
         @endif
@@ -2471,5 +2516,94 @@ window.toggleNotifDropdown = function () {
         }
 
         setInterval(checkBoardAccess, 5000);
+    </script>
+    <!-- Add Client Modal -->
+    <div class="modal" id="addClientModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Client</h3>
+                <button class="modal-close" onclick="document.getElementById('addClientModal').style.display='none'">&times;</button>
+            </div>
+            <form action="{{ route('clients.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="bg-picker-label">Client Image</label>
+                        <input type="file" name="image" class="modal-input" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label class="bg-picker-label">Client Name *</label>
+                        <input type="text" name="name" class="modal-input" placeholder="Enter client name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="bg-picker-label">Email *</label>
+                        <input type="email" name="email" class="modal-input" placeholder="Enter client email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="bg-picker-label">Father's Name</label>
+                        <input type="text" name="father_name" class="modal-input" placeholder="Enter father's name">
+                    </div>
+                    <div class="form-group">
+                        <label class="bg-picker-label">Phone Number</label>
+                        <input type="text" name="phone" class="modal-input" placeholder="Enter phone number">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="document.getElementById('addClientModal').style.display='none'">Cancel</button>
+                    <button type="submit" class="btn-create" style="background: #579dff;">Add Client</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function filterByClient(clientId, clientName, boardIds) {
+            // Show filter header
+            document.getElementById('clientFilterHeader').style.display = 'flex';
+            document.getElementById('filterClientName').innerText = clientName;
+            
+            // Hide recently viewed and clients section while filtering
+            document.querySelector('.client-section').style.display = 'none';
+            const recentViewed = document.querySelector('.section-header')?.parentElement;
+            if (recentViewed && recentViewed.textContent.includes('Recently viewed')) {
+                recentViewed.style.display = 'none';
+            }
+
+            // Filter boards
+            const boardCards = document.querySelectorAll('.boards-grid a');
+            boardCards.forEach(anchor => {
+                const boardLink = anchor.getAttribute('href');
+                const boardId = boardLink.split('/').pop();
+                
+                if (boardIds.includes(parseInt(boardId))) {
+                    anchor.parentElement.style.display = 'block';
+                } else {
+                    anchor.parentElement.style.display = 'none';
+                }
+            });
+
+            // Hide empty workspaces
+            const workspaces = document.querySelectorAll('.section:not(.client-section)');
+            workspaces.forEach(ws => {
+                const visibleBoards = ws.querySelectorAll('.boards-grid > *:not([style*="display: none"])');
+                if (visibleBoards.length === 0) {
+                    ws.style.display = 'none';
+                } else {
+                    ws.style.display = 'block';
+                }
+            });
+        }
+
+        function clearClientFilter() {
+            document.getElementById('clientFilterHeader').style.display = 'none';
+            document.querySelector('.client-section').style.display = 'block';
+            
+            // Restore visibility
+            const allSections = document.querySelectorAll('.section');
+            allSections.forEach(section => section.style.display = 'block');
+            
+            const boardCards = document.querySelectorAll('.boards-grid > *');
+            boardCards.forEach(card => card.style.display = 'block');
+        }
     </script>
 </body>

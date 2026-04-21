@@ -25,6 +25,7 @@ class Card extends Model
         'is_archived',
         'start_date',
         'due_date',
+        'client_id',
     ];
 
     protected $casts = [
@@ -80,5 +81,13 @@ class Card extends Model
     public function activities(): HasMany
     {
         return $this->hasMany(CardActivity::class)->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * Get the client associated with the card.
+     */
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
     }
 }

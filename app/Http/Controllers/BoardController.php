@@ -224,7 +224,8 @@ class BoardController extends Controller
                 ->values()
                 ->toArray();
 
-            return view('boards.show', compact('board', 'canEdit', 'boards'));
+            $clients = \App\Models\Client::all();
+            return view('boards.show', compact('board', 'canEdit', 'boards', 'clients'));
         }
 
     /**
@@ -1046,5 +1047,19 @@ class BoardController extends Controller
             ->get();
 
         return response()->json(['requests' => $requests]);
+    }
+
+    /**
+     * Update the client associated with the board.
+     */
+    public function updateClient(Request $request, Board $board)
+    {
+        $request->validate([
+            'client_id' => 'nullable|exists:clients,id',
+        ]);
+
+        $board->update(['client_id' => $request->client_id]);
+
+        return response()->json(['success' => true, 'message' => 'Board client updated successfully']);
     }
 }

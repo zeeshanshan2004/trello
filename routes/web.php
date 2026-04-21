@@ -11,6 +11,7 @@ use App\Http\Controllers\CardController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\BoardAccessController;
+use App\Http\Controllers\ClientController;
 use Laravel\Socialite\Facades\Socialite;
 
 /* |-------------------------------------------------------------------------- | Web Routes |-------------------------------------------------------------------------- | | Here is where you can register web routes for your application. These | routes are loaded by the RouteServiceProvider and all of them will | be assigned to the "web" middleware group. Make something great! | */
@@ -18,7 +19,7 @@ use Laravel\Socialite\Facades\Socialite;
 
 Route::get('/clearcache', function () {
 
-Artisan::call('storage:link ');
+    Artisan::call('storage:link ');
     Artisan::call('config:clear');
     Artisan::call('cache:clear');
     Artisan::call('route:clear');
@@ -84,6 +85,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/boards/{board}/restore', [BoardController::class , 'restore'])->name('boards.restore');
     Route::get('/boards/{board}/activities', [BoardController::class, 'getActivities'])->name('boards.activities');
     Route::get('/boards/{board}/archived-cards', [BoardController::class , 'getArchivedCards'])->name('boards.archived-cards');
+    Route::post('/boards/{board}/client', [BoardController::class, 'updateClient'])->name('boards.update-client');
     Route::get('/archived-cards/all', [BoardController::class , 'getAllArchivedCards'])->name('archived-cards.all');
     
     // Board Sharing Routes
@@ -121,6 +123,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/boards/{board}/lists/{list}/cards/{card}', [CardController::class , 'show'])->name('cards.show');
     Route::post('/boards/{board}/lists/{list}/cards', [CardController::class , 'store'])->name('cards.store');
     Route::put('/boards/{board}/lists/{list}/cards/{card}', [CardController::class , 'update'])->name('cards.update');
+    Route::post('/boards/{board}/lists/{list}/cards/{card}/client', [CardController::class , 'updateClient'])->name('cards.update-client');
     Route::post('/boards/{board}/lists/{list}/cards/{card}/labels', [CardController::class , 'updateLabels'])->name('cards.labels.update');
     Route::put('/boards/{board}/lists/{list}/cards/{card}/labels', [CardController::class , 'updateLabels'])->name('cards.labels.update.put');
     Route::post('/boards/{board}/lists/{list}/cards/{card}/move', [CardController::class , 'move'])->name('cards.move');
@@ -174,5 +177,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/users/{user}/toggle', [UserManagementController::class , 'toggleStatus'])->name('admin.users.toggle');
     Route::delete('/admin/users/{user}', [UserManagementController::class , 'destroy'])->name('admin.users.destroy');
     Route::post('/admin/users/{user}/password', [UserManagementController::class , 'changePassword'])->name('admin.users.password');
+
+    // Client Routes
+    Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
+    Route::get('/clients/{client}', [ClientController::class, 'show'])->name('clients.show');
+    Route::delete('/clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
 
 });

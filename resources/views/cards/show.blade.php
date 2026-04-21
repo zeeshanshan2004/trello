@@ -252,6 +252,16 @@
                                         +</div>
                                 </div>
                             </div>
+                            
+                            <div class="metadata-item">
+                                <h3 style="font-size: 12px; font-weight: 600; color: #9fadbc; text-transform: uppercase; margin-bottom: 8px;">Client</h3>
+                                <select onchange="updateCardClient(this.value)" style="background: #3d444d; border: none; color: #b6c2cf; border-radius: 4px; padding: 6px 12px; font-size: 14px; cursor: pointer; height: 32px; width: 100%; min-width: 150px;">
+                                    <option value="">Select Client</option>
+                                    @foreach($clients as $client)
+                                        <option value="{{ $client->id }}" {{ $card->client_id == $client->id ? 'selected' : '' }}>{{ $client->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
 
 
                             <!-- Updated Date Format -->@if($card->start_date || $card->due_date)
@@ -3834,6 +3844,35 @@
                 }
             });
         });
+        function updateCardClient(clientId) {
+            const cardId = {{ $card->id }};
+            const listId = {{ $list->id }};
+            const boardId = {{ $board->id }};
+            
+            fetch(`${window.location.origin}/boards/${boardId}/lists/${listId}/cards/${cardId}/client`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ client_id: clientId || null })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Card client updated',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        background: '#22272b',
+                        color: '#b6c2cf'
+                    });
+                }
+            });
+        }
     </script>
 </body>
 

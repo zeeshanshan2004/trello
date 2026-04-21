@@ -511,8 +511,7 @@
             <!-- Board Access Feedback (toast) -->
             <div id="board-access-feedback" style="display:none;"></div>
 
-            <!-- Search to Grant Board Access -->
-            <div style="margin-top: 24px; position: relative; max-width: 480px;">
+            <div style="margin-top: 24px; position: relative;">
                 <input
                     id="grantSearchInput"
                     type="text"
@@ -521,10 +520,12 @@
                     spellcheck="false"
                     oninput="filterGrantUsers(this.value)"
                     onfocus="if(this.value.trim().length > 0) filterGrantUsers(this.value)"
-                    style="width: 265%; padding: 10px 14px 10px 36px; background: #1d2125; border: 1px solid #38414a; border-radius: 6px; color: #b6c2cf; font-size: 14px; outline: none; box-sizing: border-box;"
+                    style="width: 100%; padding: 12px 14px 12px 40px; background: #1d2125; border: 1px solid #38414a; border-radius: 8px; color: #b6c2cf; font-size: 14px; outline: none; box-sizing: border-box; transition: all 0.2s;"
+                    onfocus="this.style.borderColor='#0052cc'; this.style.boxShadow='0 0 0 2px rgba(0,82,204,0.2)'"
+                    onblur="this.style.borderColor='#38414a'; this.style.boxShadow='none'"
                 />
-                <span style="position:absolute; left:11px; top:50%; transform:translateY(-50%); color:#9fadbc; pointer-events:none; display:flex; align-items:center;">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <span style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#9fadbc; pointer-events:none; display:flex; align-items:center;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 </span>
                 <div id="grantDropdown" style="display:none; position: absolute; top: 44px; left: 0; background: #22272b; border: 1px solid #38414a; border-radius: 8px; width: 100%; box-shadow: 0 8px 16px rgba(0,0,0,0.4); z-index: 200; padding: 8px 0; max-height: 260px; overflow-y: auto;">
                     @foreach($grantableUsers as $gu)
@@ -586,6 +587,38 @@
                         @endif
                     </div>
                 @endif
+            </div>
+        </div>
+
+        <div class="section" style="margin-top: 48px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                <h2 class="section-title" style="margin-bottom: 0;">Clients ({{ count($clients) }})</h2>
+            </div>
+            <div class="boards-grid">
+                @foreach($clients as $client)
+                    <a href="{{ route('clients.show', $client) }}" style="text-decoration: none;">
+                        <div class="board-card client-card" style="position: relative; background: #22272b; border: 1px solid #38414a;">
+                            @if($client->image_path)
+                                <img src="{{ Storage::url($client->image_path) }}" class="board-card-image" style="object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="board-card-gradient" style="display: none; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: rgba(255,255,255,0.8);">
+                                    {{ strtoupper(substr($client->name, 0, 1)) }}
+                                </div>
+                            @else
+                                <div class="board-card-gradient" style="display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; width: 100%; height: 100%; background: linear-gradient(135deg, #1c2b41 0%, #0052cc 100%); color: rgba(255,255,255,0.8);">
+                                    {{ strtoupper(substr($client->name, 0, 1)) }}
+                                </div>
+                            @endif
+                            <div class="board-card-title" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);">
+                                <div style="font-weight: 700;">{{ $client->name }}</div>
+                                <div style="font-size: 11px; font-weight: 400; opacity: 0.8; margin-top: 2px;">{{ $client->email }}</div>
+                            </div>
+                        </div>
+                    </a>
+                @endforeach
+
+                <div class="board-card create" onclick="openClientModal()" style="cursor: pointer; background: #1d2125; border: 2px dashed #38414a; height: 96px;">
+                    <div style="font-size: 14px; font-weight: 600; color: #9fadbc;">Add Client</div>
+                </div>
             </div>
         </div>
     </div>
@@ -701,7 +734,50 @@
         </div>
     </div>
 
+    <!-- Client Modal -->
+    <div id="clientModal" class="modal-overlay" style="z-index: 3000;">
+        <div class="create-board-modal" style="max-width: 480px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Client</h2>
+                <button onclick="closeClientModal()" class="close-modal-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('clients.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-form-group">
+                        <label>Client Name <span class="required">*</span></label>
+                        <input type="text" name="name" required placeholder="Full Name">
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Email <span class="required">*</span></label>
+                        <input type="email" name="email" required placeholder="client@example.com" style="width: 100%; padding: 10px 12px; background: #1d2125; border: 2px solid #38414a; border-radius: 4px; color: #b6c2cf; font-size: 14px;">
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Father Name</label>
+                        <input type="text" name="father_name" placeholder="Father Name">
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Phone Number</label>
+                        <input type="text" name="phone" placeholder="+1234567890">
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Client Image</label>
+                        <input type="file" name="image" accept="image/*" style="width: 100%; color: #b6c2cf;">
+                    </div>
+                    <button type="submit" class="btn-submit-modal">Add Client</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
+        function openClientModal() {
+            document.getElementById('clientModal').classList.add('active');
+        }
+        function closeClientModal() {
+            document.getElementById('clientModal').classList.remove('active');
+        }
+
         function openCreateBoardModal(workspaceId = null) {
             const modal = document.getElementById('createBoardModal');
             modal.classList.add('active');

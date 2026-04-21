@@ -85,6 +85,7 @@ class CardController extends Controller
         $card = Card::create([
             'list_id' => $list->id,
             'title' => $request->title,
+            'client_id' => $request->client_id,
             'position' => $maxPosition + 1,
         ]);
 
@@ -176,6 +177,7 @@ class CardController extends Controller
                 'allActiveUsers' => $allActiveUsers,
                 'boardLabels' => $board->labels,
                 'canDelete' => $canDelete,
+                'clients' => \App\Models\Client::all(),
             ]);
         }
 
@@ -233,6 +235,7 @@ class CardController extends Controller
             'allActiveUsers' => $allActiveUsers,
             'boardLabels' => $board->labels,
             'canDelete' => $canDelete,
+            'clients' => \App\Models\Client::all(),
         ]);
     }
 
@@ -974,5 +977,19 @@ $canDelete = $isAdmin || $isAuthor || ($isOwner && (!$commentAuthorIsAdmin || $i
         }
         
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Update the client associated with the card.
+     */
+    public function updateClient(Request $request, Board $board, ListModel $list, Card $card)
+    {
+        $request->validate([
+            'client_id' => 'nullable|exists:clients,id',
+        ]);
+
+        $card->update(['client_id' => $request->client_id]);
+
+        return response()->json(['success' => true, 'message' => 'Card client updated successfully']);
     }
 }

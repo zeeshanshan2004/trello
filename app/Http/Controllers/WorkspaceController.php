@@ -161,7 +161,8 @@ class WorkspaceController extends Controller
             ->whereNotIn('id', $allWorkspaceMemberIds)
             ->get(['id', 'name', 'email']);
 
-        return view('workspaces.show', compact('workspace', 'userRole', 'isWorkspaceMember', 'grantableUsers'));
+        $clients = \App\Models\Client::all();
+        return view('workspaces.show', compact('workspace', 'userRole', 'isWorkspaceMember', 'grantableUsers', 'clients'));
     }
 
     /**

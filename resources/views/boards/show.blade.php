@@ -1331,6 +1331,16 @@
  
 
         <div class="board-header-right">
+            <!-- Client Selection Dropdown -->
+            <div style="margin-right: 12px; display: flex; align-items: center; gap: 8px;">
+                <select onchange="updateBoardClient(this.value)" style="background: #22272b; border: 1px solid #38414a; color: #b6c2cf; border-radius: 4px; padding: 6px 12px; font-size: 13px; cursor: pointer; height: 32px;">
+                    <option value="">Select Client</option>
+                    @foreach($clients as $client)
+                        <option value="{{ $client->id }}" {{ $board->client_id == $client->id ? 'selected' : '' }}>{{ $client->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            
             <!-- Members Button with Dropdown (Only for Admin and Owner) -->
             @php
                 $isAdmin = Auth::user()->isSystemAdmin();
@@ -1844,6 +1854,16 @@
                             required
                             autofocus
                         >
+                    </div>
+
+                    <div class="card-form-group" style="margin-top: 12px;">
+                        <label style="display: block; font-size: 11px; font-weight: 600; color: #9fadbc; margin-bottom: 4px; text-transform: uppercase;">Client</label>
+                        <select name="client_id" id="cardClientInput" style="width: 100%; padding: 8px; background: #22272b; border: 1px solid #454f59; border-radius: 3px; color: #b6c2cf; font-size: 14px; outline: none;">
+                            <option value="">No Client</option>
+                            @foreach($clients as $client)
+                                <option value="{{ $client->id }}">{{ $client->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 
                 </form>
@@ -2808,6 +2828,7 @@
         function submitCardForm() {
             const titleInput = document.getElementById('cardTitleInput');
             const descInput = document.getElementById('cardDescriptionInput');
+            const clientInput = document.getElementById('cardClientInput');
             const form = document.getElementById('cardForm');
             
             if (!titleInput.value.trim()) {
@@ -2824,6 +2845,7 @@
             const data = {
                 title: titleInput.value,
                 description: descInput ? descInput.value : '',
+                client_id: clientInput ? clientInput.value : null
             };
 
             fetch(url, {
@@ -4316,6 +4338,33 @@
                 }
             })
             .catch(e => showToast('Error removing member', 'error'));
+        }
+
+        function updateBoardClient(clientId) {
+            const boardId = {{ $board->id }};
+            fetch(`${BASE_URL}/boards/${boardId}/client`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ client_id: clientId || null })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Board client updated',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        background: '#22272b',
+                        color: '#b6c2cf'
+                    });
+                }
+            });
         }
 
         /* Drag to Scroll Functionality */
