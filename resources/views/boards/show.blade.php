@@ -1331,15 +1331,7 @@
  
 
         <div class="board-header-right">
-            <!-- Client Selection Dropdown -->
-            <div style="margin-right: 12px; display: flex; align-items: center; gap: 8px;">
-                <select onchange="updateBoardClient(this.value)" style="background: #22272b; border: 1px solid #38414a; color: #b6c2cf; border-radius: 4px; padding: 6px 12px; font-size: 13px; cursor: pointer; height: 32px;">
-                    <option value="">Select Client</option>
-                    @foreach($clients as $client)
-                        <option value="{{ $client->id }}" {{ $board->client_id == $client->id ? 'selected' : '' }}>{{ $client->name }}</option>
-                    @endforeach
-                </select>
-            </div>
+
             
             <!-- Members Button with Dropdown (Only for Admin and Owner) -->
             @php
@@ -1865,9 +1857,7 @@
                             @endforeach
                         </select>
                     </div>
-                
                 </form>
-            </div>
             <div class="card-modal-footer">
                 <button type="button" class="btn-add-card-modal" id="cardSubmitButton" onclick="submitCardForm()">Add card</button>
                 <!-- <button type="button" class="btn-tip"> -->

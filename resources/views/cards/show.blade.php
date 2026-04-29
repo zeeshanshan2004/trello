@@ -253,15 +253,7 @@
                                 </div>
                             </div>
                             
-                            <div class="metadata-item">
-                                <h3 style="font-size: 12px; font-weight: 600; color: #9fadbc; text-transform: uppercase; margin-bottom: 8px;">Client</h3>
-                                <select onchange="updateCardClient(this.value)" style="background: #3d444d; border: none; color: #b6c2cf; border-radius: 4px; padding: 6px 12px; font-size: 14px; cursor: pointer; height: 32px; width: 100%; min-width: 150px;">
-                                    <option value="">Select Client</option>
-                                    @foreach($clients as $client)
-                                        <option value="{{ $client->id }}" {{ $card->client_id == $client->id ? 'selected' : '' }}>{{ $client->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+
 
 
                             <!-- Updated Date Format -->@if($card->start_date || $card->due_date)

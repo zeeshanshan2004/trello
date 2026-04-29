@@ -182,5 +182,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
     Route::get('/clients/{client}', [ClientController::class, 'show'])->name('clients.show');
     Route::delete('/clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
+    Route::post('/boards/{board}/detach-client', [BoardController::class, 'detachClient'])->name('boards.detach-client');
 
 });

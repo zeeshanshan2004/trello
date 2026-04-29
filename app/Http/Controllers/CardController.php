@@ -82,6 +82,27 @@ class CardController extends Controller
         // Get the highest position in this list
         $maxPosition = $list->cards()->max('position') ?? -1;
 
+        if ($request->client_id) {
+            $currentBoardId = $board->id;
+            
+            $alreadyAssignedToBoard = Board::where('client_id', $request->client_id)
+                ->where('id', '!=', $currentBoardId)
+                ->exists();
+
+            $alreadyAssignedToCard = \App\Models\Card::where('client_id', $request->client_id)
+                ->whereHas('list', function($q) use ($currentBoardId) {
+                    $q->where('board_id', '!=', $currentBoardId);
+                })
+                ->exists();
+
+            if ($alreadyAssignedToBoard || $alreadyAssignedToCard) {
+                return response()->json([
+                    'success' => false, 
+                    'error' => 'This client is already assigned to another board.'
+                ], 422);
+            }
+        }
+
         $card = Card::create([
             'list_id' => $list->id,
             'title' => $request->title,
@@ -167,6 +188,18 @@ class CardController extends Controller
             $isOwner = $board->workspace->isOwner($currentUser->id);
             $canDelete = $isAdmin || $isOwner;
 
+            $currentBoardId = $board->id;
+            $clients = \App\Models\Client::where(function($q) use ($currentBoardId, $card) {
+                // Not assigned to any board directly
+                $q->whereDoesntHave('boards', function($bq) use ($currentBoardId) {
+                    $bq->where('id', '!=', $currentBoardId);
+                })
+                // AND not assigned to any card in another board
+                ->whereDoesntHave('cards.list', function($lq) use ($currentBoardId) {
+                    $lq->where('board_id', '!=', $currentBoardId);
+                });
+            })->get();
+            
             return view('cards.show', [
                 'board' => $board,
                 'list' => $list,
@@ -177,7 +210,7 @@ class CardController extends Controller
                 'allActiveUsers' => $allActiveUsers,
                 'boardLabels' => $board->labels,
                 'canDelete' => $canDelete,
-                'clients' => \App\Models\Client::all(),
+                'clients' => $clients,
             ]);
         }
 
@@ -225,6 +258,18 @@ class CardController extends Controller
         $isOwner = $board->workspace->isOwner($currentUser->id);
         $canDelete = $isAdmin || $isOwner;
 
+        $currentBoardId = $board->id;
+        $clients = \App\Models\Client::where(function($q) use ($currentBoardId, $card) {
+            // Not assigned to any board directly
+            $q->whereDoesntHave('boards', function($bq) use ($currentBoardId) {
+                $bq->where('id', '!=', $currentBoardId);
+            })
+            // AND not assigned to any card in another board
+            ->whereDoesntHave('cards.list', function($lq) use ($currentBoardId) {
+                $lq->where('board_id', '!=', $currentBoardId);
+            });
+        })->get();
+
         return view('cards.show', [
             'board' => $board,
             'list' => $list,
@@ -235,7 +280,7 @@ class CardController extends Controller
             'allActiveUsers' => $allActiveUsers,
             'boardLabels' => $board->labels,
             'canDelete' => $canDelete,
-            'clients' => \App\Models\Client::all(),
+            'clients' => $clients,
         ]);
     }
 
@@ -987,6 +1032,29 @@ $canDelete = $isAdmin || $isAuthor || ($isOwner && (!$commentAuthorIsAdmin || $i
         $request->validate([
             'client_id' => 'nullable|exists:clients,id',
         ]);
+
+        if ($request->client_id) {
+            $currentBoardId = $board->id;
+
+            // Check direct board assignment in other boards
+            $alreadyAssignedToBoard = Board::where('client_id', $request->client_id)
+                ->where('id', '!=', $currentBoardId)
+                ->exists();
+
+            // Check card assignment in other boards
+            $alreadyAssignedToCard = \App\Models\Card::where('client_id', $request->client_id)
+                ->whereHas('list', function($q) use ($currentBoardId) {
+                    $q->where('board_id', '!=', $currentBoardId);
+                })
+                ->exists();
+
+            if ($alreadyAssignedToBoard || $alreadyAssignedToCard) {
+                return response()->json([
+                    'success' => false, 
+                    'message' => 'This client is already assigned to another board.'
+                ], 422);
+            }
+        }
 
         $card->update(['client_id' => $request->client_id]);
 

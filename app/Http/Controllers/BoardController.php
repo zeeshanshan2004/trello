@@ -224,7 +224,18 @@ class BoardController extends Controller
                 ->values()
                 ->toArray();
 
-            $clients = $board->workspace->clients()->get();
+            $clients = $board->workspace->clients()
+                ->where(function($q) use ($board) {
+                    // Not assigned to any board directly (except current)
+                    $q->whereDoesntHave('boards', function($bq) use ($board) {
+                        $bq->where('id', '!=', $board->id);
+                    })
+                    // AND not assigned to any card in another board
+                    ->whereDoesntHave('cards.list', function($lq) use ($board) {
+                        $lq->where('board_id', '!=', $board->id);
+                    });
+                })
+                ->get();
             return view('boards.show', compact('board', 'canEdit', 'boards', 'clients'));
         }
 
@@ -1058,8 +1069,57 @@ class BoardController extends Controller
             'client_id' => 'nullable|exists:clients,id',
         ]);
 
+        if ($request->client_id) {
+            $currentBoardId = $board->id;
+            
+            // Check direct board assignment
+            $alreadyAssignedToBoard = Board::where('client_id', $request->client_id)
+                ->where('id', '!=', $currentBoardId)
+                ->exists();
+
+            // Check card assignment in other boards
+            $alreadyAssignedToCard = \App\Models\Card::where('client_id', $request->client_id)
+                ->whereHas('list', function($q) use ($currentBoardId) {
+                    $q->where('board_id', '!=', $currentBoardId);
+                })
+                ->exists();
+
+            if ($alreadyAssignedToBoard || $alreadyAssignedToCard) {
+                return response()->json([
+                    'success' => false, 
+                    'message' => 'This client is already assigned to another board.'
+                ], 422);
+            }
+        }
+
         $board->update(['client_id' => $request->client_id]);
 
         return response()->json(['success' => true, 'message' => 'Board client updated successfully']);
+    }
+
+    /**
+     * Detach the client from the board and all its cards.
+     */
+    public function detachClient(Request $request, Board $board)
+    {
+        $clientId = $request->input('client_id');
+        
+        if (!$clientId) {
+            return response()->json(['success' => false, 'message' => 'Client ID is required'], 422);
+        }
+
+        // Clear board association if it matches this client
+        if ($board->client_id == $clientId) {
+            $board->update(['client_id' => null]);
+        }
+        
+        // Clear them from all cards in this board as well
+        \App\Models\Card::where('client_id', $clientId)
+            ->whereHas('list', function($q) use ($board) {
+                $q->where('board_id', $board->id);
+            })
+            ->update(['client_id' => null]);
+
+        return response()->json(['success' => true, 'message' => 'Board detached from client successfully']);
     }
 }

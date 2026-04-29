@@ -53,7 +53,7 @@ class ClientController extends Controller
             
         $allBoardIds = array_unique(array_merge($explicitBoardIds, $cardBoardIds));
         
-        $boards = \App\Models\Board::whereIn('id', $allBoardIds)->where('is_archived', false)->get();
+        $boards = \App\Models\Board::with('labels')->whereIn('id', $allBoardIds)->where('is_archived', false)->get();
         
         // Cards assigned to this client
         $cards = \App\Models\Card::with(['list.board', 'comments', 'attachments', 'checklistItems', 'members'])
