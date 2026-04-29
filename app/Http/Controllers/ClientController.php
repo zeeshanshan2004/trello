@@ -55,7 +55,13 @@ class ClientController extends Controller
         
         $boards = \App\Models\Board::whereIn('id', $allBoardIds)->where('is_archived', false)->get();
         
-        return view('clients.show', compact('client', 'boards'));
+        // Cards assigned to this client
+        $cards = \App\Models\Card::with(['list.board', 'comments', 'attachments', 'checklistItems', 'members'])
+            ->where('client_id', $client->id)
+            ->where('is_archived', false)
+            ->get();
+        
+        return view('clients.show', compact('client', 'boards', 'cards'));
     }
 
     /**

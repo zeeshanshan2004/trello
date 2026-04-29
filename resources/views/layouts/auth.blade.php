@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <title>@yield('title', 'Trello') - {{ config('app.name', 'Laravel') }}</title>
-
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
@@ -371,24 +370,28 @@
                 font-size: 28px;
             }
         }
+
         .logout-link-auth {
             position: absolute;
             top: 20px;
             right: 20px;
             z-index: 10;
         }
+
         .logout-link-auth a {
             color: #6b778c;
             text-decoration: none;
             font-size: 14px;
             font-weight: 500;
         }
+
         .logout-link-auth a:hover {
             color: #172b4d;
             text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
     <div class="bg-decoration"></div>
     @auth
@@ -411,7 +414,8 @@
         </div>
 
         @if (session('success'))
-            <div style="background: #e3fcef; color: #006644; padding: 12px; border-radius: 4px; font-size: 14px; margin-bottom: 20px; border: 1px solid #abf5d1;">
+            <div
+                style="background: #e3fcef; color: #006644; padding: 12px; border-radius: 4px; font-size: 14px; margin-bottom: 20px; border: 1px solid #abf5d1;">
                 {{ session('success') }}
             </div>
         @endif
@@ -433,4 +437,5 @@
         </div>
     </div>
 </body>
+
 </html>
